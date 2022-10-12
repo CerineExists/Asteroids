@@ -1,4 +1,40 @@
+module Model where
+
+import View
+import Controller
+
+
+data GameState = GameState {
+    player :: Player
+}
+
+
+data Player = Player Location Direction 
+data Location = Location Float Float 
+data Direction = Direction Float Float 
+
+startPlayer = Player (Location 0f 0f) (Direction 0f 0f) 
 {-
+data GameState = GameState { 
+ player :: Player 
+, bullets :: [Bullet] 
+, asteroids :: [Asteroid] 
+, enemies :: [Enemy] 
+, points :: Int 
+} 
+
+data Player = Player Location Direction 
+data Bullet = Bullet Location Direction 
+
+
+data Direction = Direction Float Float 
+data Location = Location Float Float 
+
+data Enemy = UFO
+data UFO = UFO Location Direction Intelligence 
+
+
+
     
  MODEL   -
 
@@ -42,6 +78,9 @@ must have all the data of your program
     - how many enemies are there
     - where are the enemies
     - etc. 
+
+    1. MODEL MAKEN
+    2. 
 
 
 VIEW:
