@@ -6,13 +6,13 @@ import View
 import Controller
 import Model
 window :: Display
-window = InWindow "Nice Window" (200, 200) (10, 10)
+window = InWindow "Asteroids" (500, 500) (10, 10)
 
 background :: Color
-background = white
+background = red
 
 drawing :: Picture
-drawing = circle 80
+drawing = circle 4
 
 main :: IO ()
 main = display window background drawing           -- Step function

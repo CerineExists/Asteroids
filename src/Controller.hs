@@ -12,5 +12,5 @@ import System.Random
 
 
 update :: GameState -> IO a -> GameState
-update = undefined
+update GameState (Player l d) i = undefined
 
