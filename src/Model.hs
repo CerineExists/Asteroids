@@ -2,25 +2,6 @@
 --   which represent the state of the game
 module Model where
 
-data InfoToShow = ShowNothing
-                | ShowANumber Int
-                | ShowAChar   Char
-
-nO_SECS_BETWEEN_CYCLES :: Float
-nO_SECS_BETWEEN_CYCLES = 5
-
-data GameState = GameState {
-                   infoToShow  :: InfoToShow
-                 , elapsedTime :: Float
-                 }
-
-initialState :: GameState
-initialState = GameState ShowNothing 0
-
--- HIERONDER ONZE EIGEN CODE
-
-import View
-import Controller
 
 
 data GameState = GameState {
@@ -32,7 +13,7 @@ data Player = Player Location Direction
 data Location = Location Float Float 
 data Direction = Direction Float Float 
 
-startPlayer = Player (Location 0f 0f) (Direction 0f 0f) 
+startPlayer = Player (Location 0 0) (Direction 0 0) 
 {-
 data GameState = GameState { 
  player :: Player 
