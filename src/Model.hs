@@ -7,7 +7,7 @@ module Model where
 data GameState = GameState {
     player :: Player
 }
-
+--cerine was hier
 
 data Player = Player Location Direction 
 data Location = Location Float Float 
