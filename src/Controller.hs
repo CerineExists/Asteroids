@@ -10,12 +10,16 @@ import System.Random
 
 -- CONTROLLER
 
-update                    :: GameState -> IO GameState
-update g@(GameState (Player (Location x y) (Direction dx dy)))  = do c <- getChar
-                                                                     case c of 
-                                                                      'w'       -> return (GameState (Player (Location x (y+1)) (Direction dx dy)))
-                                                                      'a'       -> return (GameState (Player (Location (x-1) y) (Direction dx dy)))
-                                                                      's'       -> return (GameState (Player (Location x (y-1)) (Direction dx dy)))
-                                                                      'd'       -> return (GameState (Player (Location (x+1) y) (Direction dx dy)))
-                                                                      _         -> return g  
-                                 
+update :: GameState -> IO GameState
+update g@(GameState p@(Player (Location x y) (Direction dx dy)))  = do
+    c <- getChar
+    case c of 
+     'w'       -> return (GameState p { location= Location  x   (y+1) })
+     'a'       -> return (GameState p { location= Location (x-1) y    })
+     's'       -> return (GameState p { location= Location  x   (y-1) }) 
+     'd'       -> return (GameState p { location= Location (x+1) y    }) 
+     _         -> return g  
+
+getLoca :: GameState -> Location
+getLoca (GameState (Player l d)) = l
+

@@ -1,15 +1,12 @@
 -- | This module contains the data types
 --   which represent the state of the game
-module Model where
-
-
-
+module Model where 
 data GameState = GameState {
     player :: Player
 }
 
 
-data Player = Player Location Direction 
+data Player = Player { location :: Location, direction :: Direction }
 data Location = Location Float Float 
 data Direction = Direction Float Float 
 
