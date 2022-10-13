@@ -9,7 +9,7 @@ window :: Display
 window = InWindow "Asteroids" (500, 500) (10, 10)
 
 background :: Color
-background = red
+background = white
 
 drawing :: Picture
 drawing = circle 4
