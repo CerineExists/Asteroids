@@ -19,6 +19,8 @@ cabal.sandbox.config
 .stack-work/
 cabal.project.local
 cabal.project.local~
+CHANGELOG.md
+Asteroids.cabal
 .HTF/
 .ghc.environment.*
 Asteroids.cabal
