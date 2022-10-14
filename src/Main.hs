@@ -14,9 +14,9 @@ background = black
 
 
 
-main :: IO ()
+main :: IO () -- display :: Color -> Picture -> IO()
 main = do
-    d <- loadBMP "Projectile.bmp"
+    d <- loadBMP "space.bmp"
     display window background d -- Step function
               
               
