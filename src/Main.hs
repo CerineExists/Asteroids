@@ -21,42 +21,76 @@ animationFunc time = Circle (2 * time)
       
 -}
 
-type World = (Float, Float)
+data World = World Player 
 type Model = (Float, Float)
 
 
 main :: IO ()
-main = play
-  windowDisplay
-  white
-  20
-  (0, 0)
-  drawingFunc
-  inputHandler
-  updateFunc
+main = playIO
+  windowDisplay     -- display mode
+  black             -- background color
+  20                -- number of simulation steps to take for each second of real time
+  initialWorld      -- The initial world
+  view              -- convert the world into a picture
+  input             -- handle input events
+  step              -- A function to step the world one iteration. It is passed the period of time (in seconds) needing to be advanced.
 
-drawingFunc :: Model -> Picture
-drawingFunc (theta, dtheta) = Line [(0, 0), (50 * cos theta, 50 * sin theta)]
-
-
-inputHandler :: Event -> World -> World
-inputHandler (EventKey (SpecialKey KeyUp) Down _ _) (x, y) = (x, y + 10)
-inputHandler (EventKey (SpecialKey KeyDown) Down _ _) (x, y) = (x, y - 10)
-inputHandler (EventKey (SpecialKey KeyRight) Down _ _) (x, y) = (x + 10, y)
-inputHandler (EventKey (SpecialKey KeyLeft) Down _ _) (x, y) = (x - 10, y)
-inputHandler _ w = w
 
 
 windowDisplay :: Display
-windowDisplay = InWindow "Window" (200, 200) (10, 10)
+windowDisplay = InWindow "Window" (1000, 500) (250, 150)
 
 
-updateFunc :: Float -> World -> World
-updateFunc _ (x, y) = (towardCenter x, towardCenter y)
-  where
-    towardCenter :: Float -> Float
-    towardCenter c = if abs c < 0.25
-      then 0
-      else if c > 0
-        then c - 0.25
-        else c + 0.25
+initialWorld :: World
+initialWorld = (World (Player (Location 0 0) (Direction 0 0) ))
+
+
+-- | Tekenen
+view :: World -> IO Picture
+view = return . viewPure
+
+viewPure :: World -> Picture --teken ruimteschip IS NU NOG EEN CIRKEL
+viewPure (World (Player (Location x y) direction)) = pictures [space,  translate (x*10) (y*10) raket]
+        where
+            raket = color white (thickCircle 3 30)
+            space = color roze $ polygon (rectanglePath 1000 500) 
+            roze = makeColor 0.9648 0.1055 0.7929 0.5  
+
+
+{-
+
+||| dit werkt maar kan never nooit bewegen
+view :: World -> IO Picture
+view _ = loadBMP "raketBMP.bmp"
+|||
+
+view :: World -> IO Picture
+view = return . viewPure
+
+viewPure :: World -> Picture --teken ruimteschip IS NU NOG EEN CIRKEL
+viewPure _ = pictures [space, raket]
+        where
+            raket = (>>=) $ loadBMP "raketBMP.bmp"
+            space = (>>=) $ loadBMP "space.bmp"
+
+-}
+
+
+
+-- | Handle user input
+input :: Event -> World -> IO World
+input e wrld = return (inputKey e wrld)
+
+inputKey :: Event -> World -> World
+inputKey (EventKey (SpecialKey KeyUp) Down _ _)    (World (Player (Location x y) direction ))  = World (Player (Location x (y + 1)) direction)
+inputKey (EventKey (SpecialKey KeyDown) Down _ _)  (World (Player (Location x y) direction ))  = World (Player (Location x (y - 1)) direction)
+inputKey (EventKey (SpecialKey KeyRight) Down _ _) (World (Player (Location x y) direction ))  = World (Player (Location (x + 1) y) direction)
+inputKey (EventKey (SpecialKey KeyLeft) Down _ _)  (World (Player (Location x y) direction ))  = World (Player (Location (x - 1) y) direction)
+inputKey _ w = w
+
+
+
+step :: Float -> World -> IO World
+step _ wrld = return wrld
+
+
