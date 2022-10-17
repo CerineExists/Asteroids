@@ -6,20 +6,47 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
 
--- ONZE CODE 
 
--- CONTROLLER
 
-update :: GameState -> IO GameState
-update g@(GameState p@(Player (Location x y) (Direction dx dy)))  = do
-    c <- getChar
-    case c of 
-     'w'       -> return (GameState p { location= Location  x   (y+1) })
-     'a'       -> return (GameState p { location= Location (x-1) y    })
-     's'       -> return (GameState p { location= Location  x   (y-1) }) 
-     'd'       -> return (GameState p { location= Location (x+1) y    }) 
-     _         -> return g  
+-- | Handle user input
+input :: Event -> World -> IO World
+input e wrld = return (inputKey e wrld)
 
-getLoca :: GameState -> Location
-getLoca (GameState (Player l d)) = l
+inputKey :: Event -> World -> World
+inputKey (EventKey (SpecialKey KeyUp) Down _ _)    (World (Player location direction ))  = World (Player (findNewLocation location direction) direction)
+--inputKey (EventKey (SpecialKey KeyDown) Down _ _)  (World (Player location direction ))  = World (Player (Location locX (locY - 1)) direction)
+inputKey (EventKey (SpecialKey KeyRight) Down _ _) (World (Player location direction ))  = World (Player location (direction+1))
+inputKey (EventKey (SpecialKey KeyLeft) Down _ _)  (World (Player location direction ))  = World (Player location (direction-1))
+inputKey _ w = w
+
+findNewLocation :: Location -> Direction -> Location
+findNewLocation (Location x y) dir = Location newX newY
+                                        where
+                                            newX = x + fst vector
+                                            newY = y + snd vector
+                                            vector = degreeToVector dir
+
+degreeToVector :: Float -> (Float, Float)
+degreeToVector degree = normalize (x, y)
+                            where
+                                x = cos radians
+                                y = sin radians
+                                radians = degree * (pi / 180)
+
+
+normalize :: (Float, Float) -> (Float, Float)
+normalize (x, y) = (newX, newY)
+                        where
+                            newX = x * multiplicationFactor
+                            newY = y * multiplicationFactor
+                            lengthVector = sqrt $ x * x + y * y 
+                            multiplicationFactor = 1 / lengthVector
+
+
+-- float degree = 70.0f;
+-- float radians = degree * (Mathf.PI / 180);
+-- Vector3 degreeVector = new Vector3(Mathf.Cos(radians), Mathf.Sin(radians), 0);
+
+step :: Float -> World -> IO World
+step _ = return 
 
