@@ -26,7 +26,7 @@ windowDisplay = InWindow "Window" (1000, 500) (250, 150)
 
 
 initialWorld :: World
-initialWorld = World {player = Player (Location 0 0) 90,
+initialWorld = World {player = Player (Location 0 0) 0,
                       keys   = []
                      }
 

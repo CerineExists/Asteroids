@@ -36,8 +36,8 @@ findNewLocation (Location x y) dir = Location newX newY
 degreeToVector :: Float -> (Float, Float)
 degreeToVector degree = normalize (x, y)
                             where
-                                x = cos radians
-                                y = sin radians
+                                x = sin radians
+                                y = cos radians
                                 radians = degree * (pi / 180)
 
 
@@ -58,10 +58,9 @@ step :: Float -> World -> IO World
 step _ w@(World (Player (Location x y) direction) keys) = return $ foldl f w keys
     where 
         f:: World -> Char -> World
-        f w 'w' = w {player = Player (Location x (y+1) )direction}
-        f w 'a' = World (Player (Location x y) (direction-1)) keys
-        f w 'd' = World (Player (Location x y) (direction+1)) keys
+        f w 'w' = w {player = Player (findNewLocation (Location x y) direction) direction} 
+        f w 'a' = World (Player (Location x y) (direction-10)) keys
+        f w 'd' = World (Player (Location x y) (direction+10)) keys
         f w  _  = w 
-        
 
 
