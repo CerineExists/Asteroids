@@ -5,19 +5,26 @@ import Model
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
+import Data.List (findIndex, elemIndex)
+import Debug.Trace (trace)
 
 
 
 -- | Handle user input
 input :: Event -> World -> IO World
-input e wrld = return (inputKey e wrld)
+input e wrld = return (inputKey e w)
+    where w = trace (show wrld) wrld
 
 inputKey :: Event -> World -> World
-inputKey (EventKey (SpecialKey KeyUp) Down _ _)    (World (Player location direction ))  = World (Player (findNewLocation location direction) direction)
---inputKey (EventKey (SpecialKey KeyDown) Down _ _)  (World (Player location direction ))  = World (Player (Location locX (locY - 1)) direction)
-inputKey (EventKey (SpecialKey KeyRight) Down _ _) (World (Player location direction ))  = World (Player location (direction+1))
-inputKey (EventKey (SpecialKey KeyLeft) Down _ _)  (World (Player location direction ))  = World (Player location (direction-1))
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player location direction) keys)  = w {player = Player (findNewLocation location direction) direction}
+inputKey (EventKey (Char c) Down _ _) w@(World (Player location direction ) keys)  = w {keys = c : keys}
+inputKey (EventKey (Char c) Up _ _)   w@(World (Player location direction ) keys)  = w {keys = pop c keys}
 inputKey _ w = w
+
+pop ::  Eq a =>  a -> [a] -> [a]
+pop e xs = case elemIndex e xs of
+  Nothing -> undefined --never happens
+  Just n -> take n xs ++ drop (n+1) xs
 
 findNewLocation :: Location -> Direction -> Location
 findNewLocation (Location x y) dir = Location newX newY
