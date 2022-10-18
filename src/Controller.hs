@@ -55,5 +55,14 @@ normalize (x, y) = (newX, newY)
 -- Vector3 degreeVector = new Vector3(Mathf.Cos(radians), Mathf.Sin(radians), 0);
 
 step :: Float -> World -> IO World
-step _ = return 
+step _ w@(World (Player (Location x y) direction) keys) = return ((f w) 'a')
+    where 
+        f:: World -> Char -> World
+        f w 'w' = w {player = Player (Location x (y+1) )direction}
+        f w 'a' = w {player = Player (Location (x-1) y )direction}
+        f w 's' = w {player = Player (Location x (y-1) )direction}
+        f w 'd' = w {player = Player (Location (x+1) y )direction}
+        f w _   = w 
+        
+
 

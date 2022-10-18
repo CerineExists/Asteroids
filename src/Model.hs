@@ -5,7 +5,7 @@ import Graphics.Gloss.Interface.IO.Game (Key)
 
 data World = World{player::Player, keys :: [Char]} 
 data Player = Player { location :: Location, direction :: Direction }
-data Location = Location Float Float 
+data Location = Location {x::Float, y::Float} 
 type Direction = Float  --Direction in degrees
 
 
