@@ -59,9 +59,8 @@ step _ w@(World (Player (Location x y) direction) keys) = return $ foldl f w key
     where 
         f:: World -> Char -> World
         f w 'w' = w {player = Player (Location x (y+1) )direction}
-        f w 'a' = w {player = Player (Location (x-1) y )direction}
-        f w 's' = w {player = Player (Location x (y-1) )direction}
-        f w 'd' = w {player = Player (Location (x+1) y )direction}
+        f w 'a' = World (Player (Location x y) (direction-1)) keys
+        f w 'd' = World (Player (Location x y) (direction+1)) keys
         f w  _  = w 
         
 
