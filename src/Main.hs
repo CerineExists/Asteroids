@@ -39,6 +39,9 @@ mkAsteroid :: Float -> Float -> Float -> Asteroid
 mkAsteroid x y = Asteroid (Middle x y)
 
 
+initialWorld = World {player = Player (Location 0 0) 0,
+                      keys   = []
+                     }
 
 
 

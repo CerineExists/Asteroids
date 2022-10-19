@@ -5,18 +5,26 @@ import Model
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
+import Data.List (findIndex, elemIndex)
+import Debug.Trace (trace)
 
 
 
 -- | Handle user input
 input :: Event -> World -> IO World
-input e wrld = return (inputKey e wrld)
+input e wrld = return (inputKey e w)
+    where w = trace (show wrld) wrld
 
 inputKey :: Event -> World -> World
-inputKey (EventKey (SpecialKey KeyUp) Down _ _)    (World (Player location direction ) asteroids)  = World (Player (findNewLocation location direction) direction) asteroids
-inputKey (EventKey (SpecialKey KeyRight) Down _ _) (World (Player location direction ) asteroids)  = World (Player location (direction+1)) asteroids
-inputKey (EventKey (SpecialKey KeyLeft) Down _ _)  (World (Player location direction ) asteroids)  = World (Player location (direction-1)) asteroids
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player location direction) keys)  = w {player = Player (findNewLocation location direction) direction}
+inputKey (EventKey (Char c) Down _ _) w@(World (Player location direction ) keys)  = w {keys = c : keys}
+inputKey (EventKey (Char c) Up _ _)   w@(World (Player location direction ) keys)  = w {keys = pop c keys}
 inputKey _ w = w
+
+pop ::  Eq a =>  a -> [a] -> [a]
+pop e xs = case elemIndex e xs of
+  Nothing -> undefined --never happens
+  Just n -> take n xs ++ drop (n+1) xs
 
 findNewLocation :: Location -> Direction -> Location
 findNewLocation (Location x y) dir = Location newX newY
@@ -28,8 +36,8 @@ findNewLocation (Location x y) dir = Location newX newY
 degreeToVector :: Float -> (Float, Float)
 degreeToVector degree = normalize (x, y)
                             where
-                                x = cos radians
-                                y = sin radians
+                                x = sin radians
+                                y = cos radians
                                 radians = degree * (pi / 180)
 
 
@@ -47,7 +55,14 @@ normalize (x, y) = (newX, newY)
 -- Vector3 degreeVector = new Vector3(Mathf.Cos(radians), Mathf.Sin(radians), 0);
 
 step :: Float -> World -> IO World
-step _ = return 
+step _ w@(World (Player (Location x y) direction) keys) = return $ foldl f w keys
+    where 
+        f:: World -> Char -> World
+        f w 'w' = w {player = Player (findNewLocation (Location x y) direction) direction} 
+        f w 'a' = World (Player (Location x y) (direction-10)) keys
+        f w 'd' = World (Player (Location x y) (direction+10)) keys
+        f w  _  = w 
+
 
 
 
