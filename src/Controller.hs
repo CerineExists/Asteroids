@@ -13,10 +13,9 @@ input :: Event -> World -> IO World
 input e wrld = return (inputKey e wrld)
 
 inputKey :: Event -> World -> World
-inputKey (EventKey (SpecialKey KeyUp) Down _ _)    (World (Player location direction ))  = World (Player (findNewLocation location direction) direction)
---inputKey (EventKey (SpecialKey KeyDown) Down _ _)  (World (Player location direction ))  = World (Player (Location locX (locY - 1)) direction)
-inputKey (EventKey (SpecialKey KeyRight) Down _ _) (World (Player location direction ))  = World (Player location (direction+1))
-inputKey (EventKey (SpecialKey KeyLeft) Down _ _)  (World (Player location direction ))  = World (Player location (direction-1))
+inputKey (EventKey (SpecialKey KeyUp) Down _ _)    (World (Player location direction ) asteroids)  = World (Player (findNewLocation location direction) direction) asteroids
+inputKey (EventKey (SpecialKey KeyRight) Down _ _) (World (Player location direction ) asteroids)  = World (Player location (direction+1)) asteroids
+inputKey (EventKey (SpecialKey KeyLeft) Down _ _)  (World (Player location direction ) asteroids)  = World (Player location (direction-1)) asteroids
 inputKey _ w = w
 
 findNewLocation :: Location -> Direction -> Location
@@ -49,4 +48,10 @@ normalize (x, y) = (newX, newY)
 
 step :: Float -> World -> IO World
 step _ = return 
+
+
+
+-- | Random rotsblokken
+--komtErEenRotsblok :: Maybe Asteroid
+--komtErEenRotsblok = do
 
