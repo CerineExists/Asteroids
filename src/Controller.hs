@@ -16,9 +16,9 @@ input e wrld = return (inputKey e w)
     where w = trace (show wrld) wrld
 
 inputKey :: Event -> World -> World
-inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player location direction) keys)  = w {player = Player (findNewLocation location direction) direction}
-inputKey (EventKey (Char c) Down _ _) w@(World (Player location direction ) keys)  = w {keys = c : keys}
-inputKey (EventKey (Char c) Up _ _)   w@(World (Player location direction ) keys)  = w {keys = pop c keys}
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player location direction) keys _)  = w {player = Player (findNewLocation location direction) direction}
+inputKey (EventKey (Char c) Down _ _) w@(World (Player location direction ) keys _)  = w {keys = c : keys}
+inputKey (EventKey (Char c) Up _ _)   w@(World (Player location direction ) keys _)  = w {keys = pop c keys}
 inputKey _ w = w
 
 pop ::  Eq a =>  a -> [a] -> [a]
@@ -55,12 +55,12 @@ normalize (x, y) = (newX, newY)
 -- Vector3 degreeVector = new Vector3(Mathf.Cos(radians), Mathf.Sin(radians), 0);
 
 step :: Float -> World -> IO World
-step _ w@(World (Player (Location x y) direction) keys) = return $ foldl f w keys
+step _ w@(World (Player (Location x y) direction) keys as) = return $ foldl f w keys
     where 
         f:: World -> Char -> World
         f w 'w' = w {player = Player (findNewLocation (Location x y) direction) direction} 
-        f w 'a' = World (Player (Location x y) (direction-10)) keys
-        f w 'd' = World (Player (Location x y) (direction+10)) keys
+        f w 'a' = World (Player (Location x y) (direction-10)) keys as
+        f w 'd' = World (Player (Location x y) (direction+10)) keys as
         f w  _  = w 
 
 

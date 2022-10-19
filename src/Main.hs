@@ -24,9 +24,9 @@ main = playIO
 windowDisplay :: Display
 windowDisplay = InWindow "Window" (1000, 500) (250, 150)
 
-
+{-
 initialWorld :: World
-initialWorld = World (Player (Location 0 0) 90 ) asteroidList
+initialWorld = World (Player (Location 0 0) 90 ) asteroidList -}
 
 asteroidList :: [Asteroid]
 asteroidList =  [   mkAsteroid (-100) 100 2, 
@@ -40,7 +40,8 @@ mkAsteroid x y = Asteroid (Middle x y)
 
 
 initialWorld = World {player = Player (Location 0 0) 0,
-                      keys   = []
+                      keys   = [],
+                      asteroids = asteroidList
                      }
 
 
