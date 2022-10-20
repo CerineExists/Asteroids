@@ -7,13 +7,14 @@ import Graphics.Gloss.Interface.IO.Game
 import System.Random
 import Data.List (findIndex, elemIndex)
 import Debug.Trace (trace)
+import Data.Foldable
 
 
 
 -- | Handle user input
 input :: Event -> World -> IO World
 input e wrld = return (inputKey e w)
-    where w = trace (show wrld) wrld
+    where w = {-trace (show wrld)-} wrld
 
 inputKey :: Event -> World -> World
 inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player location direction) keys)  = w {player = Player (findNewLocation location direction) direction}
@@ -54,13 +55,22 @@ normalize (x, y) = (newX, newY)
 -- float radians = degree * (Mathf.PI / 180);
 -- Vector3 degreeVector = new Vector3(Mathf.Cos(radians), Mathf.Sin(radians), 0);
 
+stepForward :: World -> World
+stepForward w@(World (Player l d) k) = w {player = Player (findNewLocation l d) d}
+
+stepLeft :: World -> World
+stepLeft w@(World (Player l d) k) = w {player = Player l (d-10)}
+
+stepRight:: World -> World
+stepRight w@(World (Player l d) k) = w {player = Player l (d+10)}
+
 step :: Float -> World -> IO World
-step _ w@(World (Player (Location x y) direction) keys) = return $ foldl f w keys
+step _ w@(World _ keys) = return $ foldr f w keys 
     where 
-        f:: World -> Char -> World
-        f w 'w' = w {player = Player (findNewLocation (Location x y) direction) direction} 
-        f w 'a' = World (Player (Location x y) (direction-10)) keys
-        f w 'd' = World (Player (Location x y) (direction+10)) keys
-        f w  _  = w 
+        f ::  Char -> World -> World
+        f 'w' = stepForward 
+        f 'a' = stepLeft     
+        f 'd' = stepRight    
+        f  _  = id 
 
 

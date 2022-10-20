@@ -13,7 +13,7 @@ main :: IO ()
 main = playIO
   windowDisplay     -- display mode
   black             -- background color
-  20                -- number of simulation steps to take for each second of real time
+  20                -- number of simulation steps to take for each second of real time !!!!TODO ADD DeltaTime!!!!!
   initialWorld      -- The initial world
   viewBMP           -- convert the world into a picture
   input             -- handle input events
