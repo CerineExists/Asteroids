@@ -33,14 +33,6 @@ findNewLocation (Location x y) (Vector2d vx vy) (Vector2d mx my) = Location newX
                 newX = x + vx
                 newY = y + vy
 
--- degreeToVector :: Float -> (Float, Float)
--- degreeToVector degree = normalize (x, y)
---                             where
---                                 x = sin radians
---                                 y = cos radians
---                                 radians = degree * (pi / 180)
-
-
 normalize :: Vector2d -> Vector2d
 normalize (Vector2d x y) = Vector2d newX newY
                         where
@@ -55,31 +47,28 @@ turn :: Vector2d -> Float -> Vector2d
 v@(Vector2d x y) `turn` f = Vector2d newX newY where
     mag = sqrt(x*x + y*y)
     ang = angle v
-    newX = mag * cos(ang - f)
-    newY = mag * sin(ang - f)
+    newX = mag * cos(pi/180 * (ang + f))
+    newY = mag * sin(pi/180 * (ang + f))
 
-
-
--- float degree = 70.0f;
--- float radians = degree * (Mathf.PI / 180);
--- Vector3 degreeVector = new Vector3(Mathf.Cos(radians), Mathf.Sin(radians), 0);
-
-stepForward :: World -> World
-stepForward w@(World (Player l d v) k) = w {player = Player (findNewLocation l d v) d v}
-
-stepLeft :: World -> World
-stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` (-10)) v}
-
-stepRight:: World -> World
-stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` 10)    v}
 
 step :: Float -> World -> IO World
-step _ w@(World _ keys) = return $ foldr f w keys 
+step _ w@(World (Player l d v) keys) = do 
+    print $ angle d
+    return $ foldr f w keys 
     where 
         f ::  Char -> World -> World
         f 'w' = stepForward 
         f 'a' = stepLeft     
         f 'd' = stepRight    
         f  _  = id 
+
+        stepForward :: World -> World
+        stepForward w@(World (Player l d v) k) = w {player = Player (findNewLocation l d v) d v}
+
+        stepLeft :: World -> World
+        stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` (-10)) v}
+
+        stepRight:: World -> World
+        stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` 10)    v}
 
 

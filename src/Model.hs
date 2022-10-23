@@ -3,14 +3,13 @@
 module Model where 
 import Graphics.Gloss.Interface.IO.Game (Vector)
 
-data World = World {player::Player, keys :: [Char]} 
-data Player = Player { location :: Location, direction :: Vector2d, velocity :: Vector2d}
-data Location = Location {x::Float, y::Float} 
+
+data World = World {player::Player, keys :: [Char]} deriving Show
+data Player = Player { location :: Location, direction :: Vector2d, velocity :: Vector2d} deriving Show
+data Location = Location {x::Float, y::Float} deriving Show 
 type Direction = Vector2d  
-data Vector2d = Vector2d {xDir :: Float, yDir:: Float}
+data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving Show
 
 angle :: Vector2d -> Float
-angle v@(Vector2d x y) = if x == 0 then 90 else 180/pi * tanh(y/x)
-
-instance Show World where
-    show(World player keys) = show keys
+angle v@(Vector2d x y) |x == 0    =  90 
+                       |otherwise =  180/pi * tan(y/x)
