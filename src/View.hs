@@ -20,7 +20,7 @@ viewPure (World (Player (Location x y) d v ) keys) = pictures [space, translate 
 viewBMP :: World -> IO Picture
 viewBMP (World (Player (Location x y) d v) keys) = do     raket <- loadBMP "raketBMP.bmp"
                                                           space <- loadBMP "space.bmp"
-                                                          return $ pictures [space, translate (x*10) (y*10) $ rotate (90 -angle d) raket]
+                                                          return $ pictures [space, translate (x*10) (y*10) $ rotate (90 - angle d) raket]
                                                     
 
 
