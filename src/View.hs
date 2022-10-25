@@ -6,8 +6,7 @@ import Graphics.Gloss
 import Model
 
 -- | Tekenen
-
-
+viewBMP :: World -> IO World
 viewBMP (World (Player (Location x y) degree v) keys as) = do     
                                                             raket <- loadBMP "raketBMP.bmp"     -- self made
                                                             space <- loadBMP "space.bmp"        -- https://opengameart.org/content/space-backdrop

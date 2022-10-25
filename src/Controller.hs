@@ -32,11 +32,13 @@ pop e xs = case elemIndex e xs of
   Nothing -> undefined --never happens
   Just n -> take n xs ++ drop (n+1) xs
 
-findNewLocation :: Location -> Vector2d -> Vector2d -> Location
+findNewLocation :: Location -> Direction -> VelocityJack -> Location -- location direction velocity
 findNewLocation (Location x y) (Vector2d vx vy) (Vector2d mx my) = Location newX newY
             where
                 newX = x + mx
                 newY = y + my
+
+
 findNewLocation :: Location -> Direction -> Location
 findNewLocation (Location x y) dir = Location newX newY
                                         where -- check for x and y if they are outside of the screen. Then the player has to come back at the other side of the screen
@@ -110,9 +112,6 @@ v@(Vector2d x y) `turn` f = Vector2d newX newY where
     newY = mag * sin(pi/180 * (ang + f))
 
 
-
-
-
 stepForward :: World -> World
 stepForward w@(World (Player l d v) k) = w {player = Player (findNewLocation l d v) d v}
 
@@ -122,14 +121,6 @@ stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` 1) v}
 stepRight:: World -> World
 stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` (-1)) v}
 
-stepForward :: World -> World
-stepForward w@(World (Player l d v) k) = w {player = Player (findNewLocation l d v) d v}
-
-stepLeft :: World -> World
-stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` 1) v}
-
-stepRight:: World -> World
-stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` (-1)) v}
 
 step :: Float -> World -> IO World
 step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys) = do -- todo change momentum
@@ -142,16 +133,10 @@ step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys) 
         f  _  = id
 
         g :: World -> World
-        g w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k) = w {player = Player (Location (x+mx) (y+my)) (Vector2d vx vy) (Vector2d (clamp (-0.01) 0.01 (mx+vx)) (clamp (-0.01) 0.01 (my+vy)))}
+        g w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k) = 
+            w {player = Player (Location (x+mx) (y+my)) (Vector2d vx vy) (Vector2d (clamp (-0.01) 0.01 (mx+vx)) (clamp (-0.01) 0.01 (my+vy)))}
 
 -- this func makes sure a value is between a min and max value
 clamp :: Float -> Float -> Float -> Float
 clamp min' max' val = max min' (min max' val) 
 
-
-        g :: World -> World
-        g w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k) = w {player = Player (Location (x+mx) (y+my)) (Vector2d vx vy) (Vector2d (clamp (-0.01) 0.01 (mx+vx)) (clamp (-0.01) 0.01 (my+vy)))}
-
--- this func makes sure a value is between a min and max value
-clamp :: Float -> Float -> Float -> Float
-clamp min' max' val = max min' (min max' val) 

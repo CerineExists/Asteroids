@@ -16,6 +16,7 @@ data World = World{player :: Player, keys :: [Char], asteroids :: [Asteroid]}
 data Player = Player { location :: Location, direction :: Vector2d, velocity :: Vector2d} deriving Show
 data Location = Location {x::Float, y::Float} deriving Show 
 type Direction = Vector2d  
+type VelocityJack = Vector2d
 data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving Show
 
 angle :: Vector2d -> Float
