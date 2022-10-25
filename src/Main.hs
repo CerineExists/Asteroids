@@ -20,22 +20,19 @@ main = playIO
   step              -- A function to step the world one iteration. It is passed the period of time (in seconds) needing to be advanced.
 
 
-
+-- Het scherm is 
 windowDisplay :: Display
 windowDisplay = InWindow "Window" (1000, 500) (250, 150)
 
-{-
-initialWorld :: World
-initialWorld = World (Player (Location 0 0) 90 ) asteroidList -}
 
 asteroidList :: [Asteroid]
-asteroidList =  [   mkAsteroid (-100) 100 2, 
-                    mkAsteroid  500 (-100) 2, 
-                    mkAsteroid (-500) (-100) 2,  
-                    mkAsteroid 1000 100 2
+asteroidList =  [   mkAsteroid (-30) 20 2 3 90, 
+                    mkAsteroid  (-50) 10 2 2 90,  
+                    mkAsteroid (-50) (-10) 2 1 90,   
+                    mkAsteroid 30 (-10) 2 3 90
                 ] 
 
-mkAsteroid :: Float -> Float -> Float -> Asteroid
+mkAsteroid :: Float -> Float -> Float -> Float -> Float -> Asteroid
 mkAsteroid x y = Asteroid (Middle x y)
 
 
