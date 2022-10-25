@@ -1,7 +1,7 @@
 -- | This module contains the data types
 --   which represent the state of the game
 module Model where 
-import Graphics.Gloss.Interface.IO.Game (Vector)
+import Debug.Trace
 
 
 data World = World {player::Player, keys :: [Char]} deriving Show
@@ -12,4 +12,4 @@ data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving Show
 
 angle :: Vector2d -> Float
 angle v@(Vector2d x y) |x == 0    =  90 
-                       |otherwise =  180/pi * tan(y/x)
+                       |otherwise =  180/pi * atan(y/x)

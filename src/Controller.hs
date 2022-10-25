@@ -33,6 +33,14 @@ findNewLocation (Location x y) (Vector2d vx vy) (Vector2d mx my) = Location newX
                 newX = x + vx
                 newY = y + vy
 
+-- degreeToVector :: Float -> (Float, Float)
+-- degreeToVector degree = normalize (x, y)
+--                             where
+--                                 x = sin radians
+--                                 y = cos radians
+--                                 radians = degree * (pi / 180)
+
+
 normalize :: Vector2d -> Vector2d
 normalize (Vector2d x y) = Vector2d newX newY
                         where
@@ -51,9 +59,23 @@ v@(Vector2d x y) `turn` f = Vector2d newX newY where
     newY = mag * sin(pi/180 * (ang + f))
 
 
+
+-- float degree = 70.0f;
+-- float radians = degree * (Mathf.PI / 180);
+-- Vector3 degreeVector = new Vector3(Mathf.Cos(radians), Mathf.Sin(radians), 0);
+
+stepForward :: World -> World
+stepForward w@(World (Player l d v) k) = w {player = Player (findNewLocation l d v) d v}
+
+stepLeft :: World -> World
+stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` (-10)) v}
+
+stepRight:: World -> World
+stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` 10)    v}
+
 step :: Float -> World -> IO World
-step _ w@(World (Player l d v) keys) = do 
-    print $ angle d
+step _ w@(World (Player l d v) keys) = do
+    print d
     return $ foldr f w keys 
     where 
         f ::  Char -> World -> World
@@ -61,14 +83,5 @@ step _ w@(World (Player l d v) keys) = do
         f 'a' = stepLeft     
         f 'd' = stepRight    
         f  _  = id 
-
-        stepForward :: World -> World
-        stepForward w@(World (Player l d v) k) = w {player = Player (findNewLocation l d v) d v}
-
-        stepLeft :: World -> World
-        stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` (-10)) v}
-
-        stepRight:: World -> World
-        stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` 10)    v}
 
 
