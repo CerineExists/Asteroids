@@ -68,14 +68,13 @@ stepForward :: World -> World
 stepForward w@(World (Player l d v) k) = w {player = Player (findNewLocation l d v) d v}
 
 stepLeft :: World -> World
-stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` (-10)) v}
+stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` 10) v}
 
 stepRight:: World -> World
-stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` 10)    v}
+stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` (-10))    v}
 
 step :: Float -> World -> IO World
-step _ w@(World (Player l d v) keys) = do
-    print d
+step _ w@(World (Player l d v) keys) = 
     return $ foldr f w keys 
     where 
         f ::  Char -> World -> World
