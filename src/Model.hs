@@ -11,5 +11,8 @@ type Direction = Vector2d
 data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving Show
 
 angle :: Vector2d -> Float
-angle v@(Vector2d x y) |x == 0    =  90 
-                       |otherwise =  180/pi * atan(y/x)
+angle v@(Vector2d x y) |x == 0    = 90 
+                       |x < 0     = 180 + a
+                       |y < 0     = 360 + a
+                       |otherwise =  a
+                       where a = 180/pi * atan(y/x)
