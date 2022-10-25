@@ -11,7 +11,7 @@ type Radius = Float
 type Velocity = Float
 
 
-data World = World{player :: Player, keys :: [Char], asteroids :: [Asteroid]} deriving Show
+data World = World{player :: Player, keys :: [Char], asteroids :: [Asteroid]} 
 
 data Player = Player { location :: Location, direction :: Vector2d, velocity :: Vector2d} deriving Show
 data Location = Location {x::Float, y::Float} deriving Show 
@@ -26,7 +26,7 @@ angle v@(Vector2d x y) |x == 0    = 90
                        where a = 180/pi * atan(y/x)
 
 instance Show World where
-    show (World (Player (Location x y) direction) keys asteroids) = "Position Player: " ++ show x ++ "  " ++ show y ++ show (asteroidszien asteroids)
+    show (World (Player (Location x y) direction v) keys asteroids) = "Position Player: " ++ show x ++ "  " ++ show y ++ show (asteroidszien asteroids)
 
 asteroidszien :: [Asteroid] -> String
 asteroidszien = concatMap oneAsteroid
