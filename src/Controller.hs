@@ -8,18 +8,21 @@ import Graphics.Gloss.Interface.IO.Game
 import System.Random
 import Data.List (findIndex, elemIndex)
 import Debug.Trace (trace)
+import Data.Foldable
+import GHC.IO.Device (IODeviceType(Directory))
+
 
 
 
 -- | Handle user input
 input :: Event -> World -> IO World
 input e wrld = return (inputKey e w)
-    where w = trace (show wrld) wrld
+    where w = {-trace (show wrld)-} wrld
 
 inputKey :: Event -> World -> World
-inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player location direction) keys _)  = w {player = Player (findNewLocation location direction) direction}
-inputKey (EventKey (Char c) Down _ _) w@(World (Player location direction ) keys _)  = w {keys = c : keys}
-inputKey (EventKey (Char c) Up _ _)   w@(World (Player location direction ) keys _)  = w {keys = pop c keys}
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d v) keys)  = undefined --todo shoot\
+inputKey (EventKey (Char c) Down _ _) w@(World (Player l d v ) keys)  = w {keys = c : keys}
+inputKey (EventKey (Char c) Up _ _)   w@(World (Player l d v ) keys)  = w {keys = pop c keys}
 inputKey _ w = w
 
 
@@ -29,6 +32,11 @@ pop e xs = case elemIndex e xs of
   Nothing -> undefined --never happens
   Just n -> take n xs ++ drop (n+1) xs
 
+findNewLocation :: Location -> Vector2d -> Vector2d -> Location
+findNewLocation (Location x y) (Vector2d vx vy) (Vector2d mx my) = Location newX newY
+            where
+                newX = x + mx
+                newY = y + my
 findNewLocation :: Location -> Direction -> Location
 findNewLocation (Location x y) dir = Location newX newY
                                         where -- check for x and y if they are outside of the screen. Then the player has to come back at the other side of the screen
@@ -76,44 +84,74 @@ outsideSquare :: Middle -> Float -> Float -> Float -> Bool
 outsideSquare (Middle x1 y1) r x2 y2    | x2 < (x1 + r) && x2 > (x1 - r) &&  y2 < (y1 + r) && y2 > (y1 - r) = False -- de case
                                         | otherwise = True
 
+-- degreeToVector :: Float -> (Float, Float)
+-- degreeToVector degree = normalize (x, y)
+--                             where
+--                                 x = sin radians
+--                                 y = cos radians
+--                                 radians = degree * (pi / 180)
 
 
-
-
--- | Help functions for calculating the new location
-degreeToVector :: Float -> (Float, Float)
-degreeToVector degree = normalize (x, y)
-                            where
-                                x = sin radians
-                                y = cos radians
-                                radians = degree * (pi / 180)
-
-
-normalize :: (Float, Float) -> (Float, Float)
-normalize (x, y) = (newX, newY)
+normalize :: Vector2d -> Vector2d
+normalize (Vector2d x y) = Vector2d newX newY
                         where
                             newX = x * multiplicationFactor
                             newY = y * multiplicationFactor
-                            lengthVector = sqrt $ x * x + y * y 
+                            lengthVector = sqrt $ x * x + y * y
                             multiplicationFactor = 1 / lengthVector
+v1 = Vector2d 1 1
+v2 = Vector2d 1 (-1)
+
+turn :: Vector2d -> Float -> Vector2d
+v@(Vector2d x y) `turn` f = Vector2d newX newY where
+    mag = sqrt(x*x + y*y)
+    ang = angle v
+    newX = mag * cos(pi/180 * (ang + f))
+    newY = mag * sin(pi/180 * (ang + f))
 
 
 
 
--- | Update function
+
+stepForward :: World -> World
+stepForward w@(World (Player l d v) k) = w {player = Player (findNewLocation l d v) d v}
+
+stepLeft :: World -> World
+stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` 1) v}
+
+stepRight:: World -> World
+stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` (-1)) v}
+
+stepForward :: World -> World
+stepForward w@(World (Player l d v) k) = w {player = Player (findNewLocation l d v) d v}
+
+stepLeft :: World -> World
+stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` 1) v}
+
+stepRight:: World -> World
+stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` (-1)) v}
+
 step :: Float -> World -> IO World
-step _ w@(World (Player (Location x y) direction) keys as) = return $ foldl f world2 keys
-    where 
-        newAsteroidList = adjustAsteroidList w as
-        world2 = World (Player (Location x y) direction) keys newAsteroidList
+step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys) = do -- todo change momentum
+    return $ g $ foldr f w keys
+    where
+        f ::  Char -> World -> World
+        f 'w' = stepForward
+        f 'a' = stepLeft
+        f 'd' = stepRight
+        f  _  = id
 
-        f :: World -> Char -> World
-        f w 'w' = w {player = Player (findNewLocation (Location x y) direction) direction} 
-        f w 'a' = World (Player (Location x y) (direction-10)) keys as
-        f w 'd' = World (Player (Location x y) (direction+10)) keys as
-        f w  _  = w 
+        g :: World -> World
+        g w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k) = w {player = Player (Location (x+mx) (y+my)) (Vector2d vx vy) (Vector2d (clamp (-0.01) 0.01 (mx+vx)) (clamp (-0.01) 0.01 (my+vy)))}
+
+-- this func makes sure a value is between a min and max value
+clamp :: Float -> Float -> Float -> Float
+clamp min' max' val = max min' (min max' val) 
 
 
+        g :: World -> World
+        g w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k) = w {player = Player (Location (x+mx) (y+my)) (Vector2d vx vy) (Vector2d (clamp (-0.01) 0.01 (mx+vx)) (clamp (-0.01) 0.01 (my+vy)))}
 
-
-
+-- this func makes sure a value is between a min and max value
+clamp :: Float -> Float -> Float -> Float
+clamp min' max' val = max min' (min max' val) 

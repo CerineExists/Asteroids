@@ -1,7 +1,7 @@
 -- | This module contains the data types
 --   which represent the state of the game
 module Model where 
-import Graphics.Gloss.Interface.IO.Game (Key)
+import Debug.Trace
 
 --data World = World Player [Asteroid]       --heb er newtype van gemaakt, want dat zei hLint
 
@@ -11,12 +11,19 @@ type Radius = Float
 type Velocity = Float
 
 
-data World = World{player :: Player, keys :: [Char], asteroids :: [Asteroid]} 
-data Player = Player { location :: Location, direction :: Direction }
-data Location = Location {x::Float, y::Float} 
-type Direction = Float  --Direction in degrees
+data World = World{player :: Player, keys :: [Char], asteroids :: [Asteroid]} deriving Show
 
+data Player = Player { location :: Location, direction :: Vector2d, velocity :: Vector2d} deriving Show
+data Location = Location {x::Float, y::Float} deriving Show 
+type Direction = Vector2d  
+data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving Show
 
+angle :: Vector2d -> Float
+angle v@(Vector2d x y) |x == 0    = 90 
+                       |x < 0     = 180 + a
+                       |y < 0     = 360 + a
+                       |otherwise =  a
+                       where a = 180/pi * atan(y/x)
 
 instance Show World where
     show (World (Player (Location x y) direction) keys asteroids) = "Position Player: " ++ show x ++ "  " ++ show y ++ show (asteroidszien asteroids)

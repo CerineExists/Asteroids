@@ -13,7 +13,7 @@ main :: IO ()
 main = playIO
   windowDisplay     -- display mode
   black             -- background color
-  20                -- number of simulation steps to take for each second of real time
+  20                -- number of simulation steps to take for each second of real time !!!!TODO ADD DeltaTime!!!!!
   initialWorld      -- The initial world
   viewBMP           -- convert the world into a picture
   input             -- handle input events
@@ -36,7 +36,7 @@ mkAsteroid :: Float -> Float -> Float -> Float -> Float -> Asteroid
 mkAsteroid x y = Asteroid (Middle x y)
 
 
-initialWorld = World {player = Player (Location 0 0) 0,
+initialWorld = World {player = Player (Location 0 0) (Vector2d 0 1) (Vector2d 0 0),
                       keys   = [],
                       asteroids = asteroidList
                      }
