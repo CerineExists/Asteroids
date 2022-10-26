@@ -166,14 +166,14 @@ stepForward :: World -> World
 stepForward w@(World (Player l d v) k a _) = w {player = Player (findNewLocation l d v) d v }
 
 stepLeft :: World -> World
-stepLeft w@(World (Player l d v) k a) = w {player = Player l  (d `turn` 10) v}
+stepLeft w@(World (Player l d v) k a _) = w {player = Player l  (d `turn` 10) v}
 
 stepRight:: World -> World
-stepRight w@(World (Player l d v) k a) = w {player = Player l (d `turn` (-10)) v}
+stepRight w@(World (Player l d v) k a _) = w {player = Player l (d `turn` (-10)) v}
 
 
 step :: Float -> World -> IO World
-step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as) = do -- todo change momentum
+step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets) = do -- todo change momentum
     --print (dx, dy)
     return $ b' $ a' $ g $ foldr f w keys --return $ (a' . g) $ foldr f w keys
     where
@@ -184,11 +184,11 @@ step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys a
         f  _  = id
 
         g :: World -> World
-        g w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) _ _) = 
+        g w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) _ _ _) = 
             w {player = Player (Location (x+vx) (y+vy)) (Vector2d dx dy) (Vector2d (clamp 0.1 ((vx+dx)/2)) (clamp 0.1 ((dy+vy)/2)))}
 
         a' :: World -> World
-        a' w@(World _ _ as) = 
+        a' w@(World _ _ as _) = 
             w {asteroids = adjustAsteroidList w as}
         
         b' :: World -> World
