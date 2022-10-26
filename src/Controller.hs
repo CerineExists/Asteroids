@@ -20,9 +20,9 @@ input e wrld = return (inputKey e w)
     where w = {-trace (show wrld)-} wrld
 
 inputKey :: Event -> World -> World
-inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d v) keys)  = undefined --todo shoot\
-inputKey (EventKey (Char c) Down _ _) w@(World (Player l d v ) keys)  = w {keys = c : keys}
-inputKey (EventKey (Char c) Up _ _)   w@(World (Player l d v ) keys)  = w {keys = pop c keys}
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d v) keys as)  = undefined --todo shoot\
+inputKey (EventKey (Char c) Down _ _) w@(World (Player l d v ) keys as)  = w {keys = c : keys}
+inputKey (EventKey (Char c) Up _ _)   w@(World (Player l d v ) keys as)  = w {keys = pop c keys}
 inputKey _ w = w
 
 
@@ -35,20 +35,15 @@ pop e xs = case elemIndex e xs of
 findNewLocation :: Location -> Direction -> VelocityJack -> Location -- location direction velocity
 findNewLocation (Location x y) (Vector2d vx vy) (Vector2d mx my) = Location newX newY
             where
-                newX = x + mx
-                newY = y + my
+                newX | x < -50 = 50 + mx 
+                     | x > 50 = -50 + mx
+                     | otherwise = x + mx
+                newY |  y < -25 = 25 + my
+                     | y > 25 = -25 + my
+                     | otherwise = y + my
 
 
-findNewLocation :: Location -> Direction -> Location
-findNewLocation (Location x y) dir = Location newX newY
-                                        where -- check for x and y if they are outside of the screen. Then the player has to come back at the other side of the screen
-                                            newX    | x < -50 = 50 + fst vector  
-                                                    | x > 50 = -50 + fst vector
-                                                    | otherwise = x + fst vector
-                                            newY    | y < -25 = 25 + fst vector
-                                                    | y > 25 = -25 + fst vector
-                                                    | otherwise = y + snd vector
-                                            vector = degreeToVector dir
+
 
 
 -- | Calculate the movements of the asteroids
@@ -65,7 +60,7 @@ isItNothing Nothing = True
 isItNothing _ = False
 
 flyingAsteroids :: World -> Asteroid -> Maybe Asteroid
-flyingAsteroids (World (Player location _) _ _) a@(Asteroid (Middle x y) radius velocity direction)   | x < -50 = Nothing  
+flyingAsteroids (World (Player location _ _) _ _) a@(Asteroid (Middle x y) radius velocity direction)   | x < -50 = Nothing  
                                                                             | x > 50 = Nothing
                                                                             | y < -25 = Nothing
                                                                             | y > 25 = Nothing
@@ -113,17 +108,17 @@ v@(Vector2d x y) `turn` f = Vector2d newX newY where
 
 
 stepForward :: World -> World
-stepForward w@(World (Player l d v) k) = w {player = Player (findNewLocation l d v) d v}
+stepForward w@(World (Player l d v) k a) = w {player = Player (findNewLocation l d v) d v}
 
 stepLeft :: World -> World
-stepLeft w@(World (Player l d v) k) = w {player = Player l  (d `turn` 1) v}
+stepLeft w@(World (Player l d v) k a) = w {player = Player l  (d `turn` 1) v}
 
 stepRight:: World -> World
-stepRight w@(World (Player l d v) k) = w {player = Player l (d `turn` (-1)) v}
+stepRight w@(World (Player l d v) k a) = w {player = Player l (d `turn` (-1)) v}
 
 
 step :: Float -> World -> IO World
-step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys) = do -- todo change momentum
+step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys as) = do -- todo change momentum
     return $ g $ foldr f w keys
     where
         f ::  Char -> World -> World
@@ -133,7 +128,7 @@ step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys) 
         f  _  = id
 
         g :: World -> World
-        g w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k) = 
+        g w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k as) = 
             w {player = Player (Location (x+mx) (y+my)) (Vector2d vx vy) (Vector2d (clamp (-0.01) 0.01 (mx+vx)) (clamp (-0.01) 0.01 (my+vy)))}
 
 -- this func makes sure a value is between a min and max value
