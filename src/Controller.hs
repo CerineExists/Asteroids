@@ -113,15 +113,16 @@ stepForward :: World -> World
 stepForward w@(World (Player l d v) k a) = w {player = Player (findNewLocation l d v) d v}
 
 stepLeft :: World -> World
-stepLeft w@(World (Player l d v) k a) = w {player = Player l  (d `turn` 1) v}
+stepLeft w@(World (Player l d v) k a) = w {player = Player l  (d `turn` 10) v}
 
 stepRight:: World -> World
-stepRight w@(World (Player l d v) k a) = w {player = Player l (d `turn` (-1)) v}
+stepRight w@(World (Player l d v) k a) = w {player = Player l (d `turn` (-10)) v}
 
 
 step :: Float -> World -> IO World
-step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys as) = do -- todo change momentum
-    return $ a' $ g $ foldr f w keys
+step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as) = do -- todo change momentum
+    --print (dx, dy)
+    return $ (a' . g) $ foldr f w keys
     where
         f ::  Char -> World -> World
         f 'w' = stepForward
@@ -130,14 +131,14 @@ step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys a
         f  _  = id
 
         g :: World -> World
-        g w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k as) = 
-            w {player = Player (Location (x+mx) (y+my)) (Vector2d vx vy) (Vector2d (clamp (-0.1) 0.1 (mx+vx)) (clamp (-0.1) 0.1 (my+vy)))}
+        g w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) _ _) = 
+            w {player = Player (Location (x+vx) (y+vy)) (Vector2d dx dy) (Vector2d (clamp 0.1 ((vx+dx)/2)) (clamp 0.1 ((dy+vy)/2)))}
 
         a' :: World -> World
-        a' w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k as) = 
-            w { asteroids = adjustAsteroidList w as}
+        a' w@(World _ _ as) = 
+            w {asteroids = adjustAsteroidList w as}
 
--- this func makes sure a value is between a min and max value
-clamp :: Float -> Float -> Float -> Float
-clamp min' max' val = max min' (min max' val) 
+-- this func makes sure a value is between a min and max value x and -x
+clamp :: Float -> Float -> Float
+clamp x val = max (-x) (min x val)
 

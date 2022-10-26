@@ -1,3 +1,4 @@
+
 -- | This module contains the data types
 --   which represent the state of the game
 module Model where 
@@ -13,7 +14,7 @@ data Player = Player { location :: Location, direction :: Direction, velocity ::
 data Location = Location {x::Float, y::Float} deriving Show 
 type Direction = Vector2d  
 type Velocity = Vector2d
-data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving Show
+data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving (Show, Eq)
 
 angle :: Vector2d -> Float
 angle v@(Vector2d x y) |x == 0    = 90 
@@ -22,11 +23,4 @@ angle v@(Vector2d x y) |x == 0    = 90
                        |otherwise =  a
                        where a = 180/pi * atan(y/x)
 
-instance Show World where
-    show (World (Player (Location x y) direction v) keys asteroids) = "Position Player: " ++ show x ++ "  " ++ show y ++ show (asteroidszien asteroids)
-
-asteroidszien :: [Asteroid] -> String
-asteroidszien = concatMap oneAsteroid
-
-oneAsteroid :: Asteroid -> String
-oneAsteroid (Asteroid (Middle x y) r v dir) = "       -- | midden: " ++ show x ++ ", " ++ show y ++ "    radius: " ++ show r
+   
