@@ -7,8 +7,11 @@ import Debug.Trace
 data World = World{ player :: Player, 
                     keys :: [Char], 
                     asteroids :: [Asteroid], 
-                    bullets :: [Bullet]} 
+                    bullets :: [Bullet],
+                    state :: State} 
 
+
+data State = Playing | Pause deriving Eq
 
 -- | data type Asteroid
 data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Velocity, directionA :: Direction}
@@ -37,7 +40,7 @@ angle v@(Vector2d x y) |x == 0    = 90
 
 -- | helper functions for the programmer to see what happens in the application
 instance Show World where
-    show (World (Player (Location x y) direction v) keys asteroids _) = "Position Player: " ++ show x ++ "  " ++ show y ++ show (asteroidszien asteroids)
+    show (World (Player (Location x y) direction v) keys asteroids _ _) = "Position Player: " ++ show x ++ "  " ++ show y ++ show (asteroidszien asteroids)
 
 asteroidszien :: [Asteroid] -> String
 asteroidszien = concatMap oneAsteroid

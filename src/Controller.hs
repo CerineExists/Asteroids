@@ -27,9 +27,10 @@ input e wrld = return (inputKey e w)
 
 
 inputKey :: Event -> World -> World
-inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d v) keys as bullets)  = w {bullets = Bullet l (bulletVelocity d) 0 : bullets} -- SHOOT (klopt het?)
-inputKey (EventKey (Char c) Down _ _) w@(World (Player l d v ) keys as _)  = w {keys = c : keys}
-inputKey (EventKey (Char c) Up _ _)   w@(World (Player l d v ) keys as _)  = w {keys = pop c keys}
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d _) _ _ bullets _)  = w {bullets = Bullet l (bulletVelocity d) 0 : bullets} -- SHOOT (klopt het?)
+inputKey (EventKey (SpecialKey KeyEsc) Down _ _) w@(World _ _ _ _ state)  = if state == Pause then w {state = Playing} else w {state = Pause}
+inputKey (EventKey (Char c) Down _ _) w@(World (Player l d v ) keys _ _ _)  = w {keys = c : keys}
+inputKey (EventKey (Char c) Up _ _)   w@(World (Player l d v ) keys _ _ _)  = w {keys = pop c keys}
 inputKey _ w = w
 
 -- | ??? JACK ???
@@ -41,9 +42,11 @@ pop e xs = case elemIndex e xs of
 
 -- | Update the state of the world
 step :: Float -> World -> IO World
-step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets) = do -- todo change momentum
+step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state) = do -- todo change momentum
     --print (dx, dy)
-    return $ b' $ a' $ g $ foldr f w keys --return $ (a' . g) $ foldr f w keys
+    if state == Pause 
+        then return w 
+        else return $ b' $ a' $ g $ foldr f w keys --return $ (a' . g) $ foldr f w keys
     where
         f ::  Char -> World -> World
         f 'w' = stepForward
@@ -52,15 +55,15 @@ step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys a
         f  _  = id
 
         g :: World -> World
-        g w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) _ _ _) = 
+        g w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) _ _ _ _) = 
             w {player = Player (Location (x+vx) (y+vy)) (Vector2d dx dy) (Vector2d (clamp 0.1 ((vx+dx)/2)) (clamp 0.1 ((dy+vy)/2)))}
 
         a' :: World -> World
-        a' w@(World _ _ as _) = 
+        a' w@(World _ _ as _ _) = 
             w {asteroids = adjustAsteroidList w as}
         
         b' :: World -> World
-        b' w@(World _ _ _ bullets) = 
+        b' w@(World _ _ _ bullets _) = 
             w { bullets = adjustBulletList w bullets}
 
 -- this func makes sure a value is between a min and max value x and -x
