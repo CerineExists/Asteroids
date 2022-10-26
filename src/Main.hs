@@ -38,7 +38,8 @@ mkAsteroid = Asteroid
 
 initialWorld = World {player = Player (Location 0 0) (Vector2d 0 1) (Vector2d 0 0),
                       keys   = [],
-                      asteroids = asteroidList
+                      asteroids = asteroidList,
+                      bullets = []
                      }
 
 
