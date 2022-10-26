@@ -1,4 +1,44 @@
 {-
+--| ongebruikte functies
+
+
+ degreeToVector :: Float -> (Float, Float)
+ degreeToVector degree = normalize (x, y)
+                             where
+                                 x = sin radians
+                                 y = cos radians
+                                radians = degree * (pi / 180)
+
+
+normalize :: Vector2d -> Vector2d
+normalize (Vector2d x y) = Vector2d newX newY
+                        where
+                            newX = x * multiplicationFactor
+                            newY = y * multiplicationFactor
+                            lengthVector = sqrt $ x * x + y * y
+                            multiplicationFactor = 1 / lengthVector
+v1 = Vector2d 1 1
+v2 = Vector2d 1 (-1)
+
+
+
+
+
+
+
+-}
+
+
+
+
+
+
+
+
+
+
+
+{-
 data GameState = GameState { 
  player :: Player 
 , bullets :: [Bullet] 
