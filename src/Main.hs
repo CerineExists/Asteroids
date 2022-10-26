@@ -29,7 +29,8 @@ windowDisplay = InWindow "Window" (1000, 500) (250, 150)
 initialWorld = World {player = Player (Location 0 0) (Vector2d 0 1) (Vector2d 0 0),
                       keys   = [],
                       asteroids = asteroidList,
-                      bullets = []
+                      bullets = [],
+                      state = Playing
                      }
 
 
