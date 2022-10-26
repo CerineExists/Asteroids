@@ -39,7 +39,7 @@ step :: Float -> World -> IO World
 step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state) = do -- todo change momentum
      if state == Pause 
         then return w 
-        else return $ (adjBulls . adjAsts . momentum) $ foldr move w keys 
+        else return $ (bulletsAndAsteroids . momentum) $ foldr move w keys 
     where
         -- Moves the player in accordance with the characters in the keys list
         move ::  Char -> World -> World
@@ -52,13 +52,11 @@ step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys a
         momentum w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) _ _ _ _) = 
             w {player = Player (Location (x+vx) (y+vy)) (Vector2d dx dy) (Vector2d (clamp 0.1 ((vx+dx)/2)) (clamp 0.1 ((dy+vy)/2)))}
         -- Adjusts the list of asteroids
-        adjAsts :: World -> World
-        adjAsts w@(World _ _ as _ _) = 
-            w {asteroids = adjustAsteroidList w as}
-        -- Adjusts the list of bullets
-        adjBulls :: World -> World
-        adjBulls w@(World _ _ _ bullets _) = 
-            w { bullets = adjustBulletList w bullets}
+        bulletsAndAsteroids :: World -> World
+        bulletsAndAsteroids w@(World _ _ as _ _) = 
+            w { asteroids = adjustAsteroidList w as,
+                bullets = adjustBulletList w bullets }
+
 
 -- Makes sure a value is between a min and max value x and -x
 clamp :: Float -> Float -> Float
