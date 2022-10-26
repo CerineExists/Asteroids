@@ -61,13 +61,13 @@ isItNothing Nothing = True
 isItNothing _ = False
 
 flyingAsteroids :: World -> Asteroid -> Maybe Asteroid
-flyingAsteroids (World (Player location (Vector2d vx vy) _) _ _) a@(Asteroid (Middle x y) radius velocity direction)   
+flyingAsteroids (World (Player location _ _) _ _) a@(Asteroid (Middle x y) radius v@(Vector2d vx vy) direction)   
                 | x < -50 = Nothing  
                 | x > 50 = Nothing
                 | y < -25 = Nothing
                 | y > 25 = Nothing
                 | isItNothing (collision a location) = Nothing -- NEE JE MOET DOOD GAAN -> NOG IMPLEMENTEREN
-                | otherwise = Just (Asteroid (Middle newX newY) radius velocity direction)
+                | otherwise = Just (Asteroid (Middle newX newY) radius v direction)
                     where
                         newX = x + vx * (mag/10)
                         newY = y + vy * (mag/10)
@@ -121,7 +121,7 @@ stepRight w@(World (Player l d v) k a) = w {player = Player l (d `turn` (-1)) v}
 
 step :: Float -> World -> IO World
 step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys as) = do -- todo change momentum
-    return $ g $ foldr f w keys
+    return $ a' $ g $ foldr f w keys
     where
         f ::  Char -> World -> World
         f 'w' = stepForward
@@ -132,6 +132,10 @@ step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys a
         g :: World -> World
         g w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k as) = 
             w {player = Player (Location (x+mx) (y+my)) (Vector2d vx vy) (Vector2d (clamp (-0.1) 0.1 (mx+vx)) (clamp (-0.1) 0.1 (my+vy)))}
+
+        a' :: World -> World
+        a' w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k as) = 
+            w { asteroids = adjustAsteroidList w as}
 
 -- this func makes sure a value is between a min and max value
 clamp :: Float -> Float -> Float -> Float

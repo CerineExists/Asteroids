@@ -26,10 +26,10 @@ windowDisplay = InWindow "Window" (1000, 500) (250, 150)
 
 
 asteroidList :: [Asteroid]
-asteroidList =  [   mkAsteroid (Middle (-30) 20) 2 (Vector2d 1 1) (Vector2d 0 0), 
-                    mkAsteroid (Middle (15) 10) 2 (Vector2d 1 (-1)) (Vector2d 0 0), 
-                    mkAsteroid (Middle (-3) 20) 2 (Vector2d (-1) 1) (Vector2d 0 0),  
-                    mkAsteroid (Middle (0) 20) 2 (Vector2d 1 1) (Vector2d 0 0)
+asteroidList =  [   mkAsteroid (Middle (-15) 20) 2 (Vector2d 1 0) (Vector2d 0 0), 
+                    mkAsteroid (Middle (-15) 10) 2 (Vector2d 3 0) (Vector2d 0 0), 
+                    mkAsteroid (Middle (-15) (-10)) 2 (Vector2d 5 0) (Vector2d 0 0),  
+                    mkAsteroid (Middle (-15) (-20)) 2 (Vector2d 0.5 0) (Vector2d 0 0)
                 ] 
 
 mkAsteroid :: Middle -> Radius -> Velocity -> Direction -> Asteroid
