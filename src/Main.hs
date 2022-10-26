@@ -26,14 +26,14 @@ windowDisplay = InWindow "Window" (1000, 500) (250, 150)
 
 
 asteroidList :: [Asteroid]
-asteroidList =  [   mkAsteroid (-30) 20 2 3 90, 
-                    mkAsteroid  (-50) 10 2 2 90,  
-                    mkAsteroid (-50) (-10) 2 1 90,   
-                    mkAsteroid 30 (-10) 2 3 90
+asteroidList =  [   mkAsteroid (Middle (-30) 20) 2 (Vector2d 1 1) (Vector2d 0 0), 
+                    mkAsteroid (Middle (15) 10) 2 (Vector2d 1 (-1)) (Vector2d 0 0), 
+                    mkAsteroid (Middle (-3) 20) 2 (Vector2d (-1) 1) (Vector2d 0 0),  
+                    mkAsteroid (Middle (0) 20) 2 (Vector2d 1 1) (Vector2d 0 0)
                 ] 
 
-mkAsteroid :: Float -> Float -> Float -> Float -> Float -> Asteroid
-mkAsteroid x y = Asteroid (Middle x y)
+mkAsteroid :: Middle -> Radius -> Velocity -> Direction -> Asteroid
+mkAsteroid = Asteroid 
 
 
 initialWorld = World {player = Player (Location 0 0) (Vector2d 0 1) (Vector2d 0 0),

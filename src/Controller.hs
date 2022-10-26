@@ -32,7 +32,7 @@ pop e xs = case elemIndex e xs of
   Nothing -> undefined --never happens
   Just n -> take n xs ++ drop (n+1) xs
 
-findNewLocation :: Location -> Direction -> VelocityJack -> Location -- location direction velocity
+findNewLocation :: Location -> Direction -> Velocity -> Location -- location direction velocity
 findNewLocation (Location x y) (Vector2d vx vy) (Vector2d mx my) = Location newX newY
             where
                 newX | x < -50 = 50 + mx 
@@ -54,22 +54,24 @@ adjustAsteroidList world (x:xs)     | isItNothing (flyingAsteroids world x) = ad
 
 noJust :: Maybe Asteroid -> Asteroid
 noJust (Just a) = a
+noJust Nothing = undefined --never happens
 
 isItNothing :: Maybe Asteroid -> Bool
 isItNothing Nothing = True
 isItNothing _ = False
 
 flyingAsteroids :: World -> Asteroid -> Maybe Asteroid
-flyingAsteroids (World (Player location _ _) _ _) a@(Asteroid (Middle x y) radius velocity direction)   | x < -50 = Nothing  
-                                                                            | x > 50 = Nothing
-                                                                            | y < -25 = Nothing
-                                                                            | y > 25 = Nothing
-                                                                            | isItNothing (collision a location) = Nothing -- NEE JE MOET DOOD GAAN -> NOG IMPLEMENTEREN
-                                                                            | otherwise = Just (Asteroid (Middle newX newY) radius velocity direction)
-                                                                                where
-                                                                                    newX = x + fst vector * (velocity/10)
-                                                                                    newY = y + snd vector * (velocity/10)
-                                                                                    vector = degreeToVector direction
+flyingAsteroids (World (Player location (Vector2d vx vy) _) _ _) a@(Asteroid (Middle x y) radius velocity direction)   
+                | x < -50 = Nothing  
+                | x > 50 = Nothing
+                | y < -25 = Nothing
+                | y > 25 = Nothing
+                | isItNothing (collision a location) = Nothing -- NEE JE MOET DOOD GAAN -> NOG IMPLEMENTEREN
+                | otherwise = Just (Asteroid (Middle newX newY) radius velocity direction)
+                    where
+                        newX = x + vx * (mag/10)
+                        newY = y + vy * (mag/10)
+                        mag = sqrt (vx * vx + vy * vy)
 
 
 collision :: Asteroid -> Location ->  Maybe Asteroid
@@ -129,7 +131,7 @@ step _ w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) keys a
 
         g :: World -> World
         g w@(World (Player (Location x y) (Vector2d vx vy) (Vector2d mx my)) k as) = 
-            w {player = Player (Location (x+mx) (y+my)) (Vector2d vx vy) (Vector2d (clamp (-0.01) 0.01 (mx+vx)) (clamp (-0.01) 0.01 (my+vy)))}
+            w {player = Player (Location (x+mx) (y+my)) (Vector2d vx vy) (Vector2d (clamp (-0.1) 0.1 (mx+vx)) (clamp (-0.1) 0.1 (my+vy)))}
 
 -- this func makes sure a value is between a min and max value
 clamp :: Float -> Float -> Float -> Float

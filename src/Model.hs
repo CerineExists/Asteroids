@@ -4,19 +4,15 @@ module Model where
 import Debug.Trace
 
 --data World = World Player [Asteroid]       --heb er newtype van gemaakt, want dat zei hLint
-
-data Asteroid = Asteroid Middle Radius Velocity Direction
-data Middle = Middle Float Float --x y coordinates of the middle point
-type Radius = Float
-type Velocity = Float
-
-
 data World = World{player :: Player, keys :: [Char], asteroids :: [Asteroid]} 
 
-data Player = Player { location :: Location, direction :: Vector2d, velocity :: Vector2d} deriving Show
+data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Velocity, directionA :: Direction}
+data Middle = Middle Float Float --x y coordinates of the middle point
+type Radius = Float
+data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving Show
 data Location = Location {x::Float, y::Float} deriving Show 
 type Direction = Vector2d  
-type VelocityJack = Vector2d
+type Velocity = Vector2d
 data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving Show
 
 angle :: Vector2d -> Float
