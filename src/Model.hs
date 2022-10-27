@@ -11,7 +11,7 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
                     bullets :: [Bullet],
                     state :: State,
                     score :: Int,
-                    pics :: [Picture]
+                    pics :: PicList
                     } 
 
 
@@ -33,7 +33,7 @@ data Location = Location {x::Float, y::Float} deriving Show
 type Direction = Vector2d  
 type Velocity = Vector2d
 data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving (Show, Eq)
-
+data PicList = PicList {raket :: Picture, space :: Picture, asteroid :: Picture}
 angle :: Vector2d -> Float
 angle v@(Vector2d x y) |x == 0    = 90 
                        |x < 0     = 180 + a
@@ -44,7 +44,7 @@ angle v@(Vector2d x y) |x == 0    = 90
 
 -- | helper functions for the programmer to see what happens in the application
 instance Show World where
-    show (World (Player (Location x y) direction v) keys asteroids _ _ _ _) = "Position Player: " ++ show x ++ "  " ++ show y ++ show (asteroidszien asteroids)
+    show World {player = Player (Location x y) d v, asteroids = as} = "Position Player: " ++ show x ++ "  " ++ show y ++ show (asteroidszien as)
 
 asteroidszien :: [Asteroid] -> String
 asteroidszien = concatMap oneAsteroid

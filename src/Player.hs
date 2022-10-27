@@ -26,12 +26,8 @@ v@(Vector2d x y) `turn` f = Vector2d newX newY where
     newY = mag * sin(pi/180 * (ang + f))
 
 
--- | Fix the movements of the player
-stepForward :: World -> World
-stepForward w@(World (Player l d v) k a _ _ _ _) = w {player = Player (findNewLocation l d v) d v }
+-- | Make a new world based on the current player, world and the keys pressed 
+stepa :: World -> World
+stepa w@World {player = Player l d v, keys = k } =
+     w {player = Player (findNewLocation l d v) (d `turn` (if 'a' `elem` k then 10 else if 'd' `elem` k then -10 else 0)) v}
 
-stepLeft :: World -> World
-stepLeft w@(World (Player l d v) k a _ _ _ _) = w {player = Player l  (d `turn` 10) v}
-
-stepRight:: World -> World
-stepRight w@(World (Player l d v) k a _ _ _ _) = w {player = Player l (d `turn` (-10)) v}

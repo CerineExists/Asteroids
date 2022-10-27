@@ -20,12 +20,12 @@ input e w = return (inputKey e w)
 -- | Adds bullets to a list of bullets on spacedown 
 inputKey :: Event -> World -> World
 inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d _) _ as bs _ _ _)   = w {bullets = Bullet l (bulletVelocity d) 0 : bs} -- SHOOT (klopt het?)
-inputKey (EventKey (SpecialKey KeyEsc) Down _ _) w@(World _ _ _ _ state _ _)                =   if state == Pause 
-                                                                                                then w {state = Playing} 
+inputKey (EventKey (SpecialKey KeyEsc) Down _ _) w@(World _ _ _ _ state _ _)                =   if state == Pause
+                                                                                                then w {state = Playing}
                                                                                             else w {state = Pause}
-inputKey (EventKey (Char c) Down _ _) w@(World _ keys _ _ _ _ _)  = w {keys = c : keys}
-inputKey (EventKey (Char c) Up _ _)   w@(World _ keys _ _ _ _ _)  = w {keys = pop c keys}
-inputKey _ w                                                      = w
+inputKey (EventKey (Char c) Down _ _) w@World { keys = keys} = w {keys = c : keys}
+inputKey (EventKey (Char c) Up   _ _) w@World { keys = keys} = w {keys = pop c keys}
+inputKey _ w                                                 = w
 
 -- | removes an element from the list
 pop ::  Eq a =>  a -> [a] -> [a]
@@ -37,31 +37,29 @@ pop e xs = case elemIndex e xs of
 -- | Update the state of the world
 step :: Float -> World -> IO World
 step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics) = do -- todo change momentum
-     if state == Pause 
-        then return w 
-        else return $ (adjustScore . bulletsAndAsteroids . momentum) $ foldr move w keys 
+     if state == Pause
+        then return w
+        else return $ (adjustScore . bulletsAndAsteroids . momentum . foldr move w) keys
     where
         -- Moves the player in accordance with the characters in the keys list
         move ::  Char -> World -> World
-        move 'w' = stepForward
-        move 'a' = stepLeft
-        move 'd' = stepRight
-        move  _  = id
+        move c = stepa
         -- Changes the momentum with respect to velocity
         momentum :: World -> World
-        momentum w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) _ _ _ _ _ _) = 
-            w {player = Player (Location (x+vx) (y+vy)) (Vector2d dx dy) (Vector2d (clamp 15 ((vx+dx)/2)) (clamp 15 ((dy+vy)/2)))}
+        momentum w@World{player = Player (Location x y          ) (Vector2d dx dy) (Vector2d vx                      vy)} =
+                 w      {player = Player (Location (x+vx) (y+vy)) (Vector2d dx dy) (Vector2d (clamp 15 ((vx+dx)/2)) (clamp 15 ((dy+vy)/2)))}
+
         -- Adjusts the list of asteroids
         bulletsAndAsteroids :: World -> World
-        bulletsAndAsteroids w@(World _ _ as _ _ _ _) = 
-            w { asteroids = adjustAsteroidList w as,
-                bullets = adjustBulletList w bullets }
+        bulletsAndAsteroids w@World { asteroids = as }= w { asteroids = adjustAsteroidList w as, bullets   = adjustBulletList   w bullets}
 
 
 -- Makes sure a value is between a min and max value x and -x
 clamp :: Float -> Float -> Float
-clamp x val = max (-x) (min x val) 
+clamp x val = max (-x) (min x val)
 
 -- | adjusts the score 
 adjustScore :: World -> World -- todo add enemy and asteroid death events
-adjustScore w@(World _ _ as _ _ score _) = w {score = score + 1}   
+adjustScore w@World{asteroids = as, score = score } = w {score = score + 1}
+
+

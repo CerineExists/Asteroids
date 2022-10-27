@@ -7,24 +7,21 @@ import Model
 
 -- | Tekenen
 viewBMP :: World -> IO Picture
-viewBMP (World (Player (Location x y) degree v) keys as bullets state score pic) = do     
-                                                            raket <- loadBMP "raketBMP.bmp"     -- self made
-                                                            space <- loadBMP "space.bmp"        -- https://opengameart.org/content/space-backdrop
-                                                            asteroid <- loadBMP "asteroid.bmp"  -- https://opengameart.org/content/asteroid-generator-and-a-set-of-generated-asteroids
-                                                            if state == Playing 
-                                                                then return $ Graphics.Gloss.pictures (
-                                                                    [space,  
-                                                                    translate x y $ rotate (90 - angle degree) raket] ++ 
-                                                                    map translateBullets bullets ++
-                                                                    map (translateAsteroid asteroid) as 
-                                                                    ++ scoreText score )
-                                                                else return $ Graphics.Gloss.pictures (
-                                                                    [space,  
-                                                                    translate (x*10) (y*10) $ rotate (90 - angle degree) raket] ++ 
-                                                                    map translateBullets bullets ++
-                                                                    map (translateAsteroid asteroid) as ++ 
-                                                                    [translate (-180) (-35) $ color white (text "Pause")]
-                                                                    ++ scoreText score) 
+viewBMP (World (Player (Location x y) degree v) keys as bullets state score (PicList r s a)) = do     
+        if state == Playing 
+            then return $ Graphics.Gloss.pictures (
+                [s,  
+                translate x y $ rotate (90 - angle degree) r] ++ 
+                map translateBullets bullets ++
+                map (translateAsteroid a) as 
+                ++ scoreText score )
+            else return $ Graphics.Gloss.pictures (
+                [s,  
+                translate (x*10) (y*10) $ rotate (90 - angle degree) r] ++ 
+                map translateBullets bullets ++
+                map (translateAsteroid a) as ++ 
+                [translate (-180) (-35) $ color white (text "Pause")]
+                ++ scoreText score) 
                                                                                                         
 
 translateAsteroid :: Picture -> Asteroid -> Picture 

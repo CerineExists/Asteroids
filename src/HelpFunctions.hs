@@ -10,4 +10,3 @@ isItNothing :: Maybe a -> Bool
 isItNothing Nothing = True
 isItNothing _ = False
 
-
