@@ -2,6 +2,7 @@
 -- | This module contains the data types which represent the state of the game
 module Model where 
 import Debug.Trace
+import Graphics.Gloss (Picture)
 
 -- | data type World which contains the whole gamestate
 data World = World{ player :: Player,  --todo add the standard pictures to world
@@ -9,7 +10,8 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
                     asteroids :: [Asteroid], 
                     bullets :: [Bullet],
                     state :: State,
-                    score :: Int
+                    score :: Int,
+                    pics :: [Picture]
                     } 
 
 
@@ -42,7 +44,7 @@ angle v@(Vector2d x y) |x == 0    = 90
 
 -- | helper functions for the programmer to see what happens in the application
 instance Show World where
-    show (World (Player (Location x y) direction v) keys asteroids _ _ _) = "Position Player: " ++ show x ++ "  " ++ show y ++ show (asteroidszien asteroids)
+    show (World (Player (Location x y) direction v) keys asteroids _ _ _ _) = "Position Player: " ++ show x ++ "  " ++ show y ++ show (asteroidszien asteroids)
 
 asteroidszien :: [Asteroid] -> String
 asteroidszien = concatMap oneAsteroid

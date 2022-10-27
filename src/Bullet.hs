@@ -18,7 +18,7 @@ adjustBulletList world (x:xs)   | isItNothing (flyingBullet world x) = adjustBul
 
 -- Check per bullet what it's new location is and delete if hit something 
 flyingBullet :: World -> Bullet -> Maybe Bullet
-flyingBullet (World (Player location _ _) _ as _ _ _) b@(Bullet loc@(Location lx ly) velocity@(Vector2d vx vy) travalledDistance) 
+flyingBullet (World (Player location _ _) _ as _ _ _ _) b@(Bullet loc@(Location lx ly) velocity@(Vector2d vx vy) travalledDistance) 
                 -- first check if the bullet is outside of the screen
                 | lx < -60 = Nothing  
                 | lx > 60 = Nothing

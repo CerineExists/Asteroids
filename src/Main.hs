@@ -31,7 +31,8 @@ initialWorld = World {player = Player (Location 0 0) (Vector2d 0 1) (Vector2d 0 
                       asteroids = asteroidList,
                       bullets = [],
                       state = Playing,
-                      score = 0
+                      score = 0,
+                      pics = []
                      }
 
 

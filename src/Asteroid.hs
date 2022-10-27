@@ -16,7 +16,7 @@ adjustAsteroidList world (x:xs)     | isItNothing (flyingAsteroids world x) = ad
 
 -- | Check per asteroid what it's new location is
 flyingAsteroids :: World -> Asteroid -> Maybe Asteroid
-flyingAsteroids (World (Player location _ _) _ _ bs _ _) a@(Asteroid (Middle x y) radius v@(Vector2d vx vy) direction)   
+flyingAsteroids (World (Player location _ _) _ _ bs _ _ _) a@(Asteroid (Middle x y) radius v@(Vector2d vx vy) direction)   
                 | x < -50 = Nothing  
                 | x > 50 = Nothing
                 | y < -25 = Nothing
