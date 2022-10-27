@@ -10,11 +10,11 @@ import Data.List (elemIndex)
 findNewLocation :: Location -> Direction -> Velocity -> Location 
 findNewLocation (Location x y) _ (Vector2d mx my) = Location newX newY
             where
-                newX | x < -50 = 50 + mx 
-                     | x > 50 = -50 + mx
+                newX | x < -500 = 500 + mx 
+                     | x > 500 = -500 + mx
                      | otherwise = x + mx
-                newY |  y < -25 = 25 + my
-                     | y > 25 = -25 + my
+                newY |  y < -250 = 250 + my
+                     | y > 250 = -250 + my
                      | otherwise = y + my
 
 -- | Find a new direction
@@ -28,10 +28,10 @@ v@(Vector2d x y) `turn` f = Vector2d newX newY where
 
 -- | Fix the movements of the player
 stepForward :: World -> World
-stepForward w@(World (Player l d v) k a _ _) = w {player = Player (findNewLocation l d v) d v }
+stepForward w@(World (Player l d v) k a _ _ _) = w {player = Player (findNewLocation l d v) d v }
 
 stepLeft :: World -> World
-stepLeft w@(World (Player l d v) k a _ _) = w {player = Player l  (d `turn` 10) v}
+stepLeft w@(World (Player l d v) k a _ _ _) = w {player = Player l  (d `turn` 10) v}
 
 stepRight:: World -> World
-stepRight w@(World (Player l d v) k a _ _) = w {player = Player l (d `turn` (-10)) v}
+stepRight w@(World (Player l d v) k a _ _ _) = w {player = Player l (d `turn` (-10)) v}
