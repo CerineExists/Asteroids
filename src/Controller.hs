@@ -23,9 +23,9 @@ inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d _) _ as 
 inputKey (EventKey (SpecialKey KeyEsc) Down _ _) w@(World _ _ _ _ state _ _)                =   if state == Pause 
                                                                                                 then w {state = Playing} 
                                                                                             else w {state = Pause}
-inputKey (EventKey (Char c) Down _ _) w@(World _ keys _ _ _ _ _)                            = w {keys = c : keys}
-inputKey (EventKey (Char c) Up _ _)   w@(World _ keys _ _ _ _ _)                            = w {keys = pop c keys}
-inputKey _ w                                                                            = w
+inputKey (EventKey (Char c) Down _ _) w@(World _ keys _ _ _ _ _)  = w {keys = c : keys}
+inputKey (EventKey (Char c) Up _ _)   w@(World _ keys _ _ _ _ _)  = w {keys = pop c keys}
+inputKey _ w                                                      = w
 
 -- | removes an element from the list
 pop ::  Eq a =>  a -> [a] -> [a]
@@ -50,7 +50,7 @@ step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys a
         -- Changes the momentum with respect to velocity
         momentum :: World -> World
         momentum w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) _ _ _ _ _ _) = 
-            w {player = Player (Location (x+vx) (y+vy)) (Vector2d dx dy) (Vector2d (clamp 10 ((vx+dx)/2)) (clamp 10 ((dy+vy)/2)))}
+            w {player = Player (Location (x+vx) (y+vy)) (Vector2d dx dy) (Vector2d (clamp 15 ((vx+dx)/2)) (clamp 15 ((dy+vy)/2)))}
         -- Adjusts the list of asteroids
         bulletsAndAsteroids :: World -> World
         bulletsAndAsteroids w@(World _ _ as _ _ _ _) = 
