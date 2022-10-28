@@ -23,7 +23,7 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
 data State = Playing | Pause deriving Eq
 
 -- | data type Asteroid
-data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Velocity, directionA :: Direction}
+data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Velocity, directionA :: Direction} deriving Show
 
 -- | data type Player
 data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving Show
@@ -32,7 +32,7 @@ data Player = Player { location :: Location, direction :: Direction, velocity ::
 data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDistance :: Float} deriving Show-- Bullet kan maximaal 50f afleggen
 
 -- | (data)types that are used in the datatypes above
-data Middle = Middle Float Float -- x y coordinates of the middle point
+data Middle = Middle Float Float deriving Show-- x y coordinates of the middle point
 type Radius = Float
 data Location = Location {x::Float, y::Float} deriving Show 
 type Direction = Vector2d  
