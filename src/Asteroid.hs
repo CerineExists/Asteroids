@@ -38,11 +38,11 @@ isHit a (Bullet loc _ _: bs)    | collision a loc = True
 
 -- | Check if there is a collision between one bullet and one asteroid
 collision :: Asteroid -> Location ->  Bool
-collision a@(Asteroid m@(Middle x1 y1) radius _ _) (Location x2 y2)     | outsideSquare m radius x2 y2 = False
-                                                                        | otherwise = True
+collision a@(Asteroid m@(Middle x1 y1) radius _ _) (Location x2 y2)  = not $ outsideSquare m radius x2 y2
+                                                                        
 
 
 outsideSquare :: Middle -> Float -> Float -> Float -> Bool
-outsideSquare (Middle x1 y1) r x2 y2    | x2 < (x1 + r) && x2 > (x1 - r) &&  y2 < (y1 + r) && y2 > (y1 - r) = False -- de case
-                                        | otherwise = True
+outsideSquare (Middle x1 y1) r x2 y2  = not $ x2 < (x1 + r) && x2 > (x1 - r) &&  y2 < (y1 + r) && y2 > (y1 - r) 
+
 

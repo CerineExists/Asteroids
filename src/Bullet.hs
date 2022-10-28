@@ -26,7 +26,7 @@ flyingBullet (World (Player location _ _) _ as _ _ _ _) b@(Bullet loc@(Location 
                 | ly > 350 = Nothing
 
                 -- check if the bullet has reached it maximum travel distance
-                | travalledDistance >= 200 = Nothing
+                | travalledDistance >= 100 = Nothing
 
                 -- check if the bullet hit an enemy -- bullet wordt verwijderd. EERDER IN ASTEROIDS DAN OOK DE ASTEROID SPLITTEN/VERWIJDEREN
                 -- isItNothing (collision a location) = Nothing -- NEE JE MOET DOOD GAAN -> NOG IMPLEMENTEREN
@@ -39,8 +39,17 @@ flyingBullet (World (Player location _ _) _ as _ _ _ _) b@(Bullet loc@(Location 
                         newY = ly + vy * (mag/10)
                         mag = sqrt (vx * vx + vy * vy)
 
--- | Did the bullet hit an asteroid?
-hit :: Location -> [Asteroid] ->  Bool -- Location = location of the bullet
+-- function hit checks if a bullet has hit an asteroid
+hit :: Location -> [Asteroid] -> Bool
 hit _ [] = False
-hit (Location x2 y2) (a@(Asteroid (Middle x1 y1) r _ _):as) = x2 < (x1 + r) && x2 > (x1 - r) &&  y2 < (y1 + r) && y2 > (y1 - r)  
-                                               
+hit l (a:as)    | l `collision` a = True
+                | otherwise = hit l as
+
+-- | Check if there is a collision between one bullet and one asteroid
+collision :: Location -> Asteroid ->  Bool
+collision (Location x2 y2) a@(Asteroid m@(Middle x1 y1) radius _ _)  = insideSquare m radius x2 y2 
+                                                                    
+
+-- | Check if the bullet is inside of the square of the asteroid
+insideSquare :: Middle -> Float -> Float -> Float -> Bool
+insideSquare (Middle x1 y1) r x2 y2   = x2 < (x1 + r) && x2 > (x1 - r) &&  y2 < (y1 + r) && y2 > (y1 - r) 
