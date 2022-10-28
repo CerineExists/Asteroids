@@ -1,4 +1,5 @@
 -- | This module defines how the state changes in response to time and user input
+
 module Controller where
 import Model
 import Player
@@ -19,7 +20,7 @@ input e w = return (inputKey e w)
 -- | Adds (w | a | s | d) to keys on keydown, removes them on keyup 
 -- | Adds bullets to a list of bullets on spacedown 
 inputKey :: Event -> World -> World
-inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d _) _ as bs _ _ _)   = w {bullets = Bullet l (bulletVelocity d) 0 : bs} -- SHOOT (klopt het?)
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d _) _ as bs _ _ _)   = w {bullets = Bullet l (bulletVelocity (Vector2d 3 3)*d) 0 : bs} -- SHOOT (klopt het?)
 inputKey (EventKey (SpecialKey KeyEsc) Down _ _) w@(World _ _ _ _ state _ _)                =   if state == Pause
                                                                                                 then w {state = Playing}
                                                                                             else w {state = Pause}
@@ -37,6 +38,7 @@ pop e xs = case elemIndex e xs of
 -- | Update the state of the world
 step :: Float -> World -> IO World
 step _ w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics) = do -- todo change momentum
+     --print (x,y, "b: ", bullets)
      if state == Pause
         then return w
         else return $ (adjustScore . bulletsAndAsteroids . momentum . foldr move w) keys
@@ -60,6 +62,6 @@ clamp x val = max (-x) (min x val)
 
 -- | adjusts the score 
 adjustScore :: World -> World -- todo add enemy and asteroid death events
-adjustScore w@World{asteroids = as, score = score } = w {score = score + 1}
+adjustScore w@World{score = score} = w {score = score + 1}
 
 

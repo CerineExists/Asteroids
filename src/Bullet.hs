@@ -20,13 +20,13 @@ adjustBulletList world (x:xs)   | isItNothing (flyingBullet world x) = adjustBul
 flyingBullet :: World -> Bullet -> Maybe Bullet
 flyingBullet (World (Player location _ _) _ as _ _ _ _) b@(Bullet loc@(Location lx ly) velocity@(Vector2d vx vy) travalledDistance) 
                 -- first check if the bullet is outside of the screen
-                | lx < -60 = Nothing  
-                | lx > 60 = Nothing
-                | ly < -35 = Nothing
-                | ly > 35 = Nothing
+                | lx < -500 = Nothing  
+                | lx > 500 = Nothing
+                | ly < -350 = Nothing
+                | ly > 350 = Nothing
 
                 -- check if the bullet has reached it maximum travel distance
-                | travalledDistance >= 50 = Nothing
+                | travalledDistance >= 200 = Nothing
 
                 -- check if the bullet hit an enemy -- bullet wordt verwijderd. EERDER IN ASTEROIDS DAN OOK DE ASTEROID SPLITTEN/VERWIJDEREN
                 -- isItNothing (collision a location) = Nothing -- NEE JE MOET DOOD GAAN -> NOG IMPLEMENTEREN
@@ -42,6 +42,5 @@ flyingBullet (World (Player location _ _) _ as _ _ _ _) b@(Bullet loc@(Location 
 -- | Did the bullet hit an asteroid?
 hit :: Location -> [Asteroid] ->  Bool -- Location = location of the bullet
 hit _ [] = False
-hit (Location x2 y2) (a@(Asteroid (Middle x1 y1) r _ _):as)     
-                                                | x2 < (x1 + r) && x2 > (x1 - r) &&  y2 < (y1 + r) && y2 > (y1 - r) = True
-                                                | otherwise = False
+hit (Location x2 y2) (a@(Asteroid (Middle x1 y1) r _ _):as) = x2 < (x1 + r) && x2 > (x1 - r) &&  y2 < (y1 + r) && y2 > (y1 - r)  
+                                               

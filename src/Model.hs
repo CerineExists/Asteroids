@@ -24,7 +24,7 @@ data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Veloci
 data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving Show
 
 -- | data type Bullet
-data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDistance :: Float} -- Bullet kan maximaal 50f afleggen
+data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDistance :: Float} deriving Show-- Bullet kan maximaal 50f afleggen
 
 -- | (data)types that are used in the datatypes above
 data Middle = Middle Float Float -- x y coordinates of the middle point
@@ -40,6 +40,16 @@ angle v@(Vector2d x y) |x == 0    = 90
                        |y < 0     = 360 + a
                        |otherwise =  a
                        where a = 180/pi * atan(y/x)
+
+-- | Instance Num for vector arithmetic
+instance Num Vector2d where
+    (Vector2d x1 y1) * (Vector2d x2 y2) = Vector2d (x1*x2) (y1*y2)
+    (Vector2d x1 y1) + (Vector2d x2 y2) = Vector2d (x1+x2) (y1+y2)
+    (Vector2d x1 y1) - (Vector2d x2 y2) = Vector2d (x1-x2) (y1-y2)
+    abs (Vector2d x y) = Vector2d (abs x) (abs y)
+    signum (Vector2d x y) = Vector2d (signum x) (signum y)
+    fromInteger i = Vector2d (fromInteger i) (fromInteger i)
+
 
 
 -- | helper functions for the programmer to see what happens in the application

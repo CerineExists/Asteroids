@@ -29,5 +29,5 @@ v@(Vector2d x y) `turn` f = Vector2d newX newY where
 -- | Make a new world based on the current player, world and the keys pressed 
 stepa :: World -> World
 stepa w@World {player = Player l d v, keys = k } =
-     w {player = Player (findNewLocation l d v) (d `turn` (if 'a' `elem` k then 10 else if 'd' `elem` k then -10 else 0)) v}
+     w {player = Player (findNewLocation l d v) (d `turn` (if 'a' `elem` k then 5 else if 'd' `elem` k then -5 else 0)) v}
 
