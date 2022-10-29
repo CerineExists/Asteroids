@@ -38,7 +38,7 @@ data Location = Location {x::Float, y::Float} deriving Show
 type Direction = Vector2d  
 type Velocity = Vector2d
 data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving (Show, Eq)
-data PicList = PicList {raket :: Picture, space :: Picture, asteroid :: Picture}
+data PicList = PicList {lazyRocket :: Picture, runningRockets :: [Picture], space :: Picture, asteroid :: Picture}
 angle :: Vector2d -> Float
 angle v@(Vector2d x y) |x == 0    = 90 
                        |x < 0     = 180 + a
@@ -66,3 +66,19 @@ asteroidszien = concatMap oneAsteroid
 
 oneAsteroid :: Asteroid -> String
 oneAsteroid (Asteroid (Middle x y) r v dir) = "       -- | midden: " ++ show x ++ ", " ++ show y ++ "    radius: " ++ show r
+
+
+
+
+-- | ANIMATION
+{-
+Een paar afbeeldingen die elkaar afwisselen
+
+Stel animatie met ruimteschip:
+
+Wat ik wil is dat ipv alleen 
+
+
+
+
+-}

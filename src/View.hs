@@ -7,22 +7,19 @@ import Model
 
 -- | Tekenen
 viewBMP :: World -> IO Picture
-viewBMP (World (Player (Location x y) degree v) keys as bullets state score (PicList r s a) _ time _) = do     
-        if state == Playing 
-            then return $ pictures (
-                [s,  
-                translate x y $ rotate (90 - angle degree) r] ++ 
-                map translateBullets bullets ++
-                map (translateAsteroid a) as 
-                ++ scoreText score ++ timeText time )
-            else return $ pictures (
-                [s,  
-                translate (x*10) (y*10) $ rotate (90 - angle degree) r] ++ 
-                map translateBullets bullets ++
-                map (translateAsteroid a) as ++ 
-                [translate (-180) (-35) $ color white (text "Pause")]
-                ++ scoreText score ++ timeText time) 
-                                                                                                        
+viewBMP (World (Player (Location x y) degree v) keys as bullets state score (PicList r [r1, r2] s a) _ time _) 
+                            | state == Playing = return $ pictures scene
+                            | otherwise = return $ pictures ( scene ++   [translate (-180) (-35) $ color white (text "Pause")]  )      
+                                where
+                                    scene = [s,  
+                                            translate x y $ rotate (90 - angle degree) rocket] ++
+                                            map translateBullets bullets ++
+                                            map (translateAsteroid a) as 
+                                            ++ scoreText score ++ timeText time
+                                    rocket  | even (round (time*24)) =  r1
+                                            | otherwise = r2
+
+-- op basis van elapsedTime één vd 2 sprites te kiezen                                                     
 
 translateAsteroid :: Picture -> Asteroid -> Picture 
 translateAsteroid pic (Asteroid (Middle x y) radius _ _) = scale (0.05 * radius) (0.05 * radius) (translate (x*100) (y*100) pic)
