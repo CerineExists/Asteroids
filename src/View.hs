@@ -7,21 +7,21 @@ import Model
 
 -- | Tekenen
 viewBMP :: World -> IO Picture
-viewBMP (World (Player (Location x y) degree v) keys as bullets state score (PicList r s a)) = do     
+viewBMP (World (Player (Location x y) degree v) keys as bullets state score (PicList r s a) _ time _) = do     
         if state == Playing 
             then return $ pictures (
                 [s,  
                 translate x y $ rotate (90 - angle degree) r] ++ 
                 map translateBullets bullets ++
                 map (translateAsteroid a) as 
-                ++ scoreText score )
+                ++ scoreText score ++ timeText time )
             else return $ pictures (
                 [s,  
                 translate (x*10) (y*10) $ rotate (90 - angle degree) r] ++ 
                 map translateBullets bullets ++
                 map (translateAsteroid a) as ++ 
                 [translate (-180) (-35) $ color white (text "Pause")]
-                ++ scoreText score) 
+                ++ scoreText score ++ timeText time) 
                                                                                                         
 
 translateAsteroid :: Picture -> Asteroid -> Picture 
@@ -34,4 +34,7 @@ translateBullets (Bullet (Location x y) _ _) = translate x y (color green (thick
 
 scoreText :: Int -> [Picture]
 scoreText score = [translate (-490) 230 $ scale 0.1 0.1  $ color white (text ("Score: " ++ show score))]
+
+timeText :: Float -> [Picture]
+timeText t = [translate (-490) 180 $ scale 0.1 0.1  $ color white (text ("Elapsed time: " ++ show t))]
 

@@ -4,6 +4,8 @@ module Model where
 import Debug.Trace
 import Graphics.Gloss (Picture)
 
+import System.Random
+
 -- | data type World which contains the whole gamestate
 data World = World{ player :: Player,  --todo add the standard pictures to world
                     keys :: [Char], 
@@ -11,7 +13,10 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
                     bullets :: [Bullet],
                     state :: State,
                     score :: Int,
-                    pics :: PicList
+                    pics :: PicList,
+                    seed :: StdGen,
+                    elapsedTime :: Float,
+                    lastAsteroidSpawned :: Float
                     } 
 
 
