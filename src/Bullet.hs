@@ -1,5 +1,4 @@
 module Bullet where 
-
 import Model
 import HelpFunctions
 
@@ -18,7 +17,7 @@ adjustBulletList world (x:xs)   | isItNothing (flyingBullet world x) = adjustBul
 
 -- Check per bullet what it's new location is and delete if hit something 
 flyingBullet :: World -> Bullet -> Maybe Bullet
-flyingBullet (World (Player location _ _) _ as _ _ _ _) b@(Bullet loc@(Location lx ly) velocity@(Vector2d vx vy) travalledDistance)
+flyingBullet (World (Player location _ _) _ as _ _ _ _ _ _ _) b@(Bullet loc@(Location lx ly) velocity@(Vector2d vx vy) travalledDistance)
                 | lx < -500 || lx > 500 || ly < -350 ||  ly > 350 || travalledDistance >= 100= Nothing  -- check if the bullet has reached it maximum travel distance or if it is outside of the screen  
                 | any (($ 1) . (hit loc 5 . getAsteroidLocation)) as = Nothing -- delete a bullet from the list when it is hit by any asteroid
                 -- check if the bullet hit an enemy -- bullet wordt verwijderd. EERDER IN ASTEROIDS DAN OOK DE ASTEROID SPLITTEN/VERWIJDEREN

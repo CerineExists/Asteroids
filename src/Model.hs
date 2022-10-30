@@ -1,4 +1,3 @@
-
 -- | This module contains the data types which represent the state of the game
 module Model where 
 import Debug.Trace

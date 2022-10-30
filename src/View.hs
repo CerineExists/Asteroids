@@ -29,12 +29,10 @@ viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList 
 -- op basis van elapsedTime één vd 2 sprites te kiezen                                                     
 
 translateAsteroid :: Picture -> Asteroid -> Picture 
-translateAsteroid pic (Asteroid (Middle x y) radius _ _) = scale (0.005 * radius) (0.005 * radius) (translate (x) (y) pic)
+translateAsteroid pic (Asteroid (Middle x y) radius _ _) =  translate x y $ scale (0.005 * radius) (0.005 * radius) pic
 
 translateBullets :: Bullet -> Picture
 translateBullets (Bullet (Location x y) _ _) = translate x y (color green (thickCircle 3 5))
-
---data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDistance :: Float}
 
 scoreText :: Int -> [Picture]
 scoreText score = [translate (-490) 230 $ scale 0.1 0.1  $ color white (text ("Score: " ++ show score))]
