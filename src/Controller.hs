@@ -22,9 +22,8 @@ input e w = return (inputKey e w)
 -- | Adds bullets to a list of bullets on spacedown 
 inputKey :: Event -> World -> World
 inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d _) _ as bs _ _ _ _ _ _)   = w {bullets = Bullet l (bulletVelocity (Vector2d 3 3)*d) 0 : bs} -- SHOOT (klopt het?)
-inputKey (EventKey (SpecialKey KeyEsc) Down _ _) w@World {state = state}         =   if state == Pause
-                                                                                     then w {state = Playing}
-                                                                                            else w {state = Pause}
+inputKey (EventKey (SpecialKey KeyEsc) Down _ _) w@World {state = state}  | state == Pause = w {state = Playing}
+                                                                          | otherwise = w {state = Pause}
 inputKey (EventKey (Char c) Down _ _) w@World { keys = keys} = w {keys = c : keys}
 inputKey (EventKey (Char c) Up   _ _) w@World { keys = keys} = w {keys = pop c keys}
 inputKey _ w                                                 = w
@@ -60,19 +59,55 @@ step time w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) key
         bulletsAndAsteroids w@World { asteroids = as }= w { asteroids = adjustAsteroidList w as, bullets   = adjustBulletList   w bullets}
 
 
-
+-- Spawns a new asteroid every 3 seconds
 spawnNewAsteroid :: World -> World
 spawnNewAsteroid w@World{asteroids = as, seed = s, elapsedTime = time, lastAsteroidSpawned = lastAs}  
                                                         | (time - lastAs) > 3 = w{seed = nextG, asteroids = newAsteroid : as, lastAsteroidSpawned = time} 
                                                         | otherwise = w
                                             where
                                               newAsteroid :: Asteroid
-                                              newAsteroid = Asteroid (Middle randomMiddleX middleY ) 2 (Vector2d 2 (-1)) (Vector2d 0 0) 
-                                              (randomMiddleX, nextG) = randomR (-50, 50) s
-                                              middleY = 0
+                                              newAsteroid    = Asteroid findMiddle 2 (Vector2d 0 1) (Vector2d 0 0) -- (findVelocity locationAsteroid)
+
+                                              findMiddle :: Middle 
+                                              findMiddle    | locationAsteroid == North  = Middle randomMiddleX 25   -- spawn at top of screen
+                                                            | locationAsteroid == South  = Middle randomMiddleX (-25)  -- spawn at bottom of screen
+                                                            | locationAsteroid == East   = Middle randomMiddleX (-25)--Middle (-50) randomMiddleY  -- spawn at left of screen                                                          
+                                                            | otherwise                  = Middle randomMiddleX (-25)--Middle 50 randomMiddleY   -- spawn at right of screen
+
+                                              findVelocity :: LocationNewAsteroid -> Velocity
+                                              findVelocity North  = Vector2d both negative
+                                              findVelocity South  = Vector2d both positive
+                                              findVelocity East   = Vector2d negative both                                             
+                                              findVelocity _      = Vector2d positive both
+                                              
+                                              locAsteroid :: LocationNewAsteroid
+                                              locAsteroid | generator == 0 = North
+                                                          | generator == 1 = East
+                                                          | generator == 2 = South
+                                                          | otherwise = West
+                                                              where
+                                                                generator = round (time*100) `mod` 4 
+
+                                              locationAsteroid = locAsteroid
+
+                                              -- find the random middlepoint
+                                              (randomMiddleX, nextG) = randomR ((-50), 50) s
+                                              (randomMiddleY, _) = randomR ((-25), 25) s
+
+                                              -- used for finding velocity
+                                              (positive, _) = randomR (0, 3) s
+                                              (negative, _) = randomR (-3, 0) s
+                                              (both, _)     = randomR (-3, 3) s
+
+
+                                                {-
+                                                 Asteroid (Middle randomMiddleX middleY ) 2 (Vector2d 2 (-1)) (Vector2d 0 0) 
+                                              
+                                              middleY = 0 -}
+                                              
 
  
-
+-- data LocationNewAsteroid = North | East | South | West    
 
 -- Makes sure a value is between a min and max value x and -x
 clamp :: Float -> Float -> Float

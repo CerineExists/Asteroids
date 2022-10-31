@@ -46,6 +46,9 @@ angle v@(Vector2d x y) |x == 0    = 90
                        |otherwise =  a
                        where a = 180/pi * atan(y/x)
 
+data LocationNewAsteroid = North | East | South | West deriving Eq
+                        
+
 -- | Instance Num for vector arithmetic
 instance Num Vector2d where
     (Vector2d x1 y1) * (Vector2d x2 y2) = Vector2d (x1*x2) (y1*y2)

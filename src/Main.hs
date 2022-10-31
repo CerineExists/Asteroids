@@ -53,7 +53,7 @@ initialWorld raket runningRockets space asteroid seed =
 
 -- The initial asteroidlist
 asteroidList :: [Asteroid]
-asteroidList =  [   mkAsteroid (Middle (-15) 20) 2 (Vector2d 1 0) (Vector2d 0 0), 
+asteroidList =  [   mkAsteroid (Middle (-15) 20) 2 (Vector2d (-1) 0) (Vector2d 0 0), 
                     mkAsteroid (Middle (-15) 10) 2 (Vector2d 3 0) (Vector2d 0 0), 
                     mkAsteroid (Middle (-15) (-10)) 2 (Vector2d 5 0) (Vector2d 0 0),  
                     mkAsteroid (Middle (-15) (-20)) 2 (Vector2d 0.5 0) (Vector2d 0 0)
