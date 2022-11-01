@@ -5,6 +5,7 @@ import Model
 import Player
 import Asteroid
 import Bullet
+import HelpFunctions
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
@@ -60,26 +61,24 @@ step time w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) key
 
 
 -- Spawns a new asteroid every 3 seconds
+-- we kunnen evt de check (time - lastAs) > 3 verplaatsen naar een andere plek en deze functie áltijd gebruiken 
+-- voor het spawnen van een nieuwe asteroid
 spawnNewAsteroid :: World -> World
 spawnNewAsteroid w@World{asteroids = as, seed = s, elapsedTime = time, lastAsteroidSpawned = lastAs}  
-                                                        | (time - lastAs) > 3 = w{seed = nextG, asteroids = newAsteroid : as, lastAsteroidSpawned = time} 
+                                                        | (time - lastAs) > 3 = w{seed = nextG3, asteroids = newAsteroid : as, lastAsteroidSpawned = time} 
                                                         | otherwise = w
                                             where
                                               newAsteroid :: Asteroid
-                                              newAsteroid    = Asteroid findMiddle 2 (Vector2d 0 1) (Vector2d 0 0) -- (findVelocity locationAsteroid)
+                                              newAsteroid    = Asteroid findMiddle 100 velocity (Vector2d 0 0) -- (findVelocity locationAsteroid)
 
                                               findMiddle :: Middle 
-                                              findMiddle    | locationAsteroid == North  = Middle randomMiddleX 25   -- spawn at top of screen
-                                                            | locationAsteroid == South  = Middle randomMiddleX (-25)  -- spawn at bottom of screen
-                                                            | locationAsteroid == East   = Middle randomMiddleX (-25)--Middle (-50) randomMiddleY  -- spawn at left of screen                                                          
-                                                            | otherwise                  = Middle randomMiddleX (-25)--Middle 50 randomMiddleY   -- spawn at right of screen
+                                              findMiddle    | locAsteroid == North  = Middle middleXY 25    -- spawn at top of screen
+                                                            | locAsteroid == South  = Middle middleXY (-25)  -- spawn at bottom of screen
+                                                            | locAsteroid == East   = Middle 50 middleXY  -- spawn at left of screen                                                          
+                                                            | otherwise             = Middle (-50) middleXY   -- spawn at right of screen
 
-                                              findVelocity :: LocationNewAsteroid -> Velocity
-                                              findVelocity North  = Vector2d both negative
-                                              findVelocity South  = Vector2d both positive
-                                              findVelocity East   = Vector2d negative both                                             
-                                              findVelocity _      = Vector2d positive both
-                                              
+
+                                              -- determine if the asteroid will spawn top, right, bottom or left
                                               locAsteroid :: LocationNewAsteroid
                                               locAsteroid | generator == 0 = North
                                                           | generator == 1 = East
@@ -88,23 +87,18 @@ spawnNewAsteroid w@World{asteroids = as, seed = s, elapsedTime = time, lastAster
                                                               where
                                                                 generator = round (time*100) `mod` 4 
 
-                                              locationAsteroid = locAsteroid
-
                                               -- find the random middlepoint
-                                              (randomMiddleX, nextG) = randomR ((-50), 50) s
-                                              (randomMiddleY, _) = randomR ((-25), 25) s
-
-                                              -- used for finding velocity
-                                              (positive, _) = randomR (0, 3) s
-                                              (negative, _) = randomR (-3, 0) s
-                                              (both, _)     = randomR (-3, 3) s
+                                              (middleXY, nextG3)  | locAsteroid == North || locAsteroid == South = randomR ((-50), 50) nextG2
+                                                                  | otherwise = randomR ((-25), 25) nextG2
 
 
-                                                {-
-                                                 Asteroid (Middle randomMiddleX middleY ) 2 (Vector2d 2 (-1)) (Vector2d 0 0) 
-                                              
-                                              middleY = 0 -}
-                                              
+                                              -- determine velocity
+                                              velocity = Vector2d (speed * x_Dir) (speed*y_Dir)
+                                              (speed, nextG2) = randomR (1,3) nextG1
+
+                                              (x_Dir, y_Dir) = degreeToVector degree
+                                              (degree, nextG1)     = randomR (0, 360) s
+                                               
 
  
 -- data LocationNewAsteroid = North | East | South | West    
