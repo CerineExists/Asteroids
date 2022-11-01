@@ -69,7 +69,7 @@ spawnNewAsteroid w@World{asteroids = as, seed = s, elapsedTime = time, lastAster
                                                         | otherwise = w
                                             where
                                               newAsteroid :: Asteroid
-                                              newAsteroid    = Asteroid findMiddle 100 velocity (Vector2d 0 0) -- (findVelocity locationAsteroid)
+                                              newAsteroid    = Asteroid findMiddle 2 velocity (Vector2d 0 0) -- (findVelocity locationAsteroid)
 
                                               findMiddle :: Middle 
                                               findMiddle    | locAsteroid == North  = Middle middleXY 25    -- spawn at top of screen
