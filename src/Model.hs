@@ -71,6 +71,12 @@ oneAsteroid :: Asteroid -> String
 oneAsteroid (Asteroid (Middle x y) r v dir) = "       -- | midden: " ++ show x ++ ", " ++ show y ++ "    radius: " ++ show r
 
 
+-- checks if a location is within a radius of another location
+hit :: Location -> Radius -> Location -> Radius -> Bool
+hit (Location x1 y1) r1 (Location x2 y2) r2 = (x1-x2)^2 + (y1-y2)^2 <= (r1+r2)^2
+
+
+
 
 
 -- | ANIMATION

@@ -1,5 +1,5 @@
 module HelpFunctions where
-
+import Model 
 -- | remove Just from the input
 noJust :: Maybe a -> a
 noJust (Just a) = a
@@ -9,6 +9,7 @@ noJust Nothing = undefined --never happens
 isItNothing :: Maybe a -> Bool
 isItNothing Nothing = True
 isItNothing _ = False
+<<<<<<< HEAD
 
 
 degreeToVector :: Float -> (Float, Float)
@@ -28,3 +29,5 @@ normalize (x, y) = (newX, newY)
                             multiplicationFactor = 1 / lengthVector
 
 
+=======
+>>>>>>> 4ae5139 (it doen't work :()

@@ -57,7 +57,7 @@ step time w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) key
 
         -- Adjusts the list of asteroids
         bulletsAndAsteroids :: World -> World
-        bulletsAndAsteroids w@World { asteroids = as }= w { asteroids = adjustAsteroidList w as, bullets   = adjustBulletList   w bullets}
+        bulletsAndAsteroids w@World { asteroids = as }= w { asteroids = adjustAsteroidList w as, bullets = adjustBulletList w bullets}
 
 
 -- Spawns a new asteroid every 3 seconds
