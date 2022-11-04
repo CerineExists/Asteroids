@@ -14,8 +14,7 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
                     score :: Int,
                     pics :: PicList,
                     seed :: StdGen,
-                    elapsedTime :: Float,
-                    lastAsteroidSpawned :: Float
+                    elapsedTime :: Float
                     } 
 
 
@@ -30,6 +29,11 @@ data Player = Player { location :: Location, direction :: Direction, velocity ::
 -- | data type Bullet
 data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDistance :: Float} deriving Show-- Bullet kan maximaal 50f afleggen
 
+
+-- | data type UFO and the bullets
+data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, size :: Float, bulletsUFO :: UFOBullets}
+type UFOBullets = [Bullet]
+
 -- | (data)types that are used in the datatypes above
 data Middle = Middle Float Float deriving Show-- x y coordinates of the middle point
 type Radius = Float
@@ -37,7 +41,7 @@ data Location = Location {x::Float, y::Float} deriving Show
 type Direction = Vector2d  
 type Velocity = Vector2d
 data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving (Show, Eq)
-data PicList = PicList {lazyRocket :: Picture, runningRockets :: [Picture], space :: Picture, asteroid :: Picture}
+data PicList = PicList {lazyRocket :: Picture, runningRockets :: [Picture], space :: Picture, asteroid :: Picture, ufo :: Picture}
 angle :: Vector2d -> Float
 angle v@(Vector2d x y) |x == 0    = 90 
                        |x < 0     = 180 + a

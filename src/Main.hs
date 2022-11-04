@@ -17,6 +17,7 @@ main = do
     rRocket2 <- loadBMP "runningRocket2.bmp"
     rRocket3 <- loadBMP "runningRocket3.bmp"
     rRocket4 <- loadBMP "runningRocket4.bmp"
+    ufo <- loadBMP "ufoBMP.bmp"
     space <- loadBMP "space.bmp"        -- https://opengameart.org/content/space-backdrop
     asteroid <- loadBMP "asteroid.bmp"  -- https://opengameart.org/content/asteroid-generator-and-a-set-of-generated-asteroids
     seed <- initStdGen
@@ -24,7 +25,7 @@ main = do
         windowDisplay     -- display mode
         black             -- background color
         20                -- number of simulation steps to take for each second of real time !!!!TODO ADD DeltaTime!!!!!
-        (initialWorld raket [rRocket1, rRocket2, rRocket3, rRocket4] space asteroid seed)   -- The initial world
+        (initialWorld raket [rRocket1, rRocket2, rRocket3, rRocket4] space asteroid ufo seed)   -- The initial world
         viewBMP           -- convert the world into a picture
         input             -- handle input events
         step              -- A function to step the world one iteration. It is passed the period of time (in seconds) needing to be advanced.
@@ -36,18 +37,17 @@ windowDisplay = InWindow "Window" (1000, 500) (250, 150)
 
 
 -- Create the initial world
-initialWorld :: Picture -> [Picture] -> Picture -> Picture  -> StdGen -> World
-initialWorld raket runningRockets space asteroid seed = 
+initialWorld :: Picture -> [Picture] -> Picture -> Picture -> Picture-> StdGen -> World
+initialWorld raket runningRockets space asteroid ufo seed = 
         World {player = Player (Location 0 0) (Vector2d 0 1) (Vector2d 0 0),
                             keys   = [],
                             asteroids = asteroidList,
                             bullets = [],
                             state = Playing,
                             score = 0,
-                            pics = PicList raket runningRockets space asteroid, 
+                            pics = PicList raket runningRockets space asteroid ufo, 
                             seed = seed,
-                            elapsedTime = 0,
-                            lastAsteroidSpawned = 0
+                            elapsedTime = 0
 }
 
 
