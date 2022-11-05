@@ -28,3 +28,13 @@ normalize (x, y) = (newX, newY)
                             multiplicationFactor = 1 / lengthVector
 
 
+-- get the location of an asteroid
+getAsteroidLocation :: Asteroid -> (Location, Radius)
+getAsteroidLocation (Asteroid (Middle x y) radius _ _) = (Location x y, radius)
+
+
+-- get the location of a bullet
+getBulletLocation :: Bullet -> (Location, Radius)
+getBulletLocation (Bullet (Location x y) _ _) = (Location x y, 5)
+
+

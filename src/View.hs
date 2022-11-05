@@ -7,7 +7,7 @@ import Model
 
 -- | Tekenen
 viewBMP :: World -> IO Picture
-viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList r [r1, r2, r3, r4] space a) _ time _) 
+viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList r [r1, r2, r3, r4] space a ufo) _ time) 
                             | state == Playing = return $ pictures scene
                             | otherwise = return $ pictures ( scene ++   [translate (-180) (-35) $ color white (text "Pause")]  )      
                                 where

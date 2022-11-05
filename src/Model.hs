@@ -14,21 +14,25 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
                     score :: Int,
                     pics :: PicList,
                     seed :: StdGen,
-                    elapsedTime :: Float,
-                    lastAsteroidSpawned :: Float
+                    elapsedTime :: Float
                     } 
 
 
 data State = Playing | Pause | Dead deriving Eq
 
 -- | data type Asteroid
-data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Velocity, directionA :: Direction} deriving Show
+data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Velocity, speed :: Float} deriving Show
 
 -- | data type Player
 data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving Show
 
 -- | data type Bullet
 data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDistance :: Float} deriving Show-- Bullet kan maximaal 50f afleggen
+
+
+-- | data type UFO and the bullets
+data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, size :: Float, bulletsUFO :: UFOBullets}
+type UFOBullets = [Bullet]
 
 -- | (data)types that are used in the datatypes above
 data Middle = Middle Float Float deriving Show-- x y coordinates of the middle point
@@ -37,7 +41,7 @@ data Location = Location {x::Float, y::Float} deriving Show
 type Direction = Vector2d  
 type Velocity = Vector2d
 data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving (Show, Eq)
-data PicList = PicList {lazyRocket :: Picture, runningRockets :: [Picture], space :: Picture, asteroid :: Picture}
+data PicList = PicList {lazyRocket :: Picture, runningRockets :: [Picture], space :: Picture, asteroid :: Picture, ufo :: Picture}
 angle :: Vector2d -> Float
 angle v@(Vector2d x y) |x == 0    = 90 
                        |x < 0     = 180 + a
@@ -71,22 +75,6 @@ oneAsteroid (Asteroid (Middle x y) r v dir) = "       -- | midden: " ++ show x +
 
 
 -- checks if a location is within a radius of another location
-hit :: Location -> Radius -> Location -> Radius -> Bool
-hit (Location x1 y1) r1 (Location x2 y2) r2 = (x1-x2)^2 + (y1-y2)^2 <= (r1+r2)^2
+hit :: Location -> Radius -> (Location, Radius) -> Bool
+hit (Location x1 y1) r1 (Location x2 y2, r2) = (x1-x2)^2 + (y1-y2)^2 <= (r1+r2)^2
 
-
-
-
-
--- | ANIMATION
-{-
-Een paar afbeeldingen die elkaar afwisselen
-
-Stel animatie met ruimteschip:
-
-Wat ik wil is dat ipv alleen 
-
-
-
-
--}

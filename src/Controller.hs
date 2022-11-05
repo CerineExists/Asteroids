@@ -10,10 +10,11 @@ import HelpFunctions
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
-import Data.List (findIndex, elemIndex)
+import Data.List
 import Debug.Trace (trace)
 import Data.Foldable
 import System.Random
+import Data.Maybe
 
 
 -- | Handle user input
@@ -22,7 +23,7 @@ input e w = return (inputKey e w)
 -- | Adds (w | a | s | d) to keys on keydown, removes them on keyup 
 -- | Adds bullets to a list of bullets on spacedown 
 inputKey :: Event -> World -> World
-inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d _) _ as bs _ _ _ _ _ _)   = w {bullets = Bullet l (bulletVelocity (Vector2d 3 3)*d) 0 : bs} -- SHOOT (klopt het?)
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d _) _ as bs _ _ _ _ _)   = w {bullets = Bullet l (bulletVelocity (Vector2d 3 3)*d) 0 : bs} -- SHOOT (klopt het?)
 inputKey (EventKey (SpecialKey KeyEsc) Down _ _) w@World {state = state}  | state == Pause = w {state = Playing}
                                                                           | otherwise = w {state = Pause}
 inputKey (EventKey (Char c) Down _ _) w@World { keys = keys} = w {keys = c : keys}
@@ -38,11 +39,11 @@ pop e xs = case elemIndex e xs of
 
 -- | Update the state of the world
 step :: Float -> World -> IO World
-step time w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics _ _ _) = do -- todo change momentum
+step time w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics _ _) = do -- todo change momentum
      --print (x,y, "b: ", bullets)
      if state == Pause
         then return w
-        else return $ (adjustTime . spawnNewAsteroid . adjustScore . bulletsAndAsteroids . momentum . foldr move w) keys
+        else return $ (adjustTime . adjustScore . bulletsAndAsteroids . momentum . foldr move w) keys
     where
         -- Moves the player in accordance with the characters in the keys list
         move ::  Char -> World -> World
@@ -55,13 +56,37 @@ step time w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) key
         adjustTime :: World -> World
         adjustTime w@World {elapsedTime = t} = w {elapsedTime = t + time}
 
-        -- Adjusts the list of asteroids
-        bulletsAndAsteroids :: World -> World
-        bulletsAndAsteroids w = w { bullets = adjustBulletList w bullets, asteroids = adjustAsteroidList w as }
+        
+
+-- Adjusts the list of asteroids
+bulletsAndAsteroids :: World -> World
+bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = score} = w { seed = newSeed, bullets = newLocBullets, asteroids = newAsteroids ++ newLocAsteroids,  score = score + newScore}
+            where
+              -- first remove the bullets that hit an asteroid and seperate the hit asteroids from the not hit asteroids
+              (notHitBullets, hitAsteroids, notHitAsteroids) = didBulletHitAsteroid bs as
+              -- give the bullets that did not hit anything a new location
+              newLocBullets = adjustBulletLocations notHitBullets
+              -- give the asteroids that were not hit a new location
+              newLocAsteroids = adjustAsteroidLocations notHitAsteroids
+              -- split the asteroids that were hit
+              (newSeed, newAsteroids) = splitAsteroids seed hitAsteroids
+              -- new score calculation
+              newScore = asteroidPoints hitAsteroids
+
+-- get 100 points for every asteroid you hit
+asteroidPoints :: [Asteroid] -> Int
+asteroidPoints asteroids = length asteroids * 100
+   
+
+-- | Checks if a bullet hit an asteroid and deletes that bullet
+didBulletHitAsteroid :: [Bullet] -> [Asteroid] -> ([Bullet], [Asteroid], [Asteroid]) 
+didBulletHitAsteroid bs as = (newBullets, hitAsteroids, notHitAsteroids)
+              where
+                newBullets = mapMaybe (deleteBullet as) bs
+                (hitAsteroids, notHitAsteroids) = partitionAsteroids bs as
+-- functie verwijderd bullets uit de list van bullets en returnt 1) asteroids die wél en 2) asteroids die niet geraakt zijn
 
 
- 
--- data LocationNewAsteroid = North | East | South | West    
 
 -- Makes sure a value is between a min and max value x and -x
 clamp :: Float -> Float -> Float
@@ -70,13 +95,5 @@ clamp x val = max (-x) (min x val)
 -- | adjusts the score 
 adjustScore :: World -> World -- todo add enemy and asteroid death events
 adjustScore w@World{score = score} = w {score = score + 1}
-
-
-
-
-
-
--- | implement randomness
-
 
 
