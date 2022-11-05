@@ -50,7 +50,8 @@ splitAsteroids seed = splitAsteroids' seed []
 
 splitAsteroid :: StdGen -> Asteroid -> (StdGen, [Asteroid])
 splitAsteroid seed a@(Asteroid m radius (Vector2d vx vy) direction)
-                                        = (nextG2,[asteroid1, asteroid2]) 
+                                  | radius <= 10  = (seed, [])
+                                  | otherwise     = (nextG2,[asteroid1, asteroid2])
                                             where
                                                 asteroid1 = Asteroid m (radius / 2) (Vector2d newVX1 newVY1) direction
                                                 asteroid2 = Asteroid m (radius / 2) (Vector2d newVX2 newVY2) direction
