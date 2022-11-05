@@ -9,9 +9,12 @@ import Data.List
 
 -- | Check if asteroid was hit by a bullet
 didABulletHitMe :: [Bullet] -> Asteroid -> Bool
-didABulletHitMe bs a@(Asteroid (Middle x y) radius v@(Vector2d vx vy) _) = 
-   any (($ 10) . (hit (Location x y) radius . getBulletLocation)) bs
-   -- any (hit (Location x y) radius . getBulletLocation) bs
+didABulletHitMe bs a@(Asteroid (Middle x y) radius v@(Vector2d vx vy) _)
+      | or boolList = True -- if the bullet hit any asteroid -> remove bullet
+      | otherwise = False
+            where
+                  locationsAndRadiusList = map getBulletLocation bs
+                  boolList = map (hit (Location x y) radius) locationsAndRadiusList -- check per bullet if hit the asteroid
 
 
 -- | Adjusting the speed of a bullet 
@@ -35,9 +38,12 @@ updateBullet b@(Bullet loc@(Location lx ly) v@(Vector2d vx vy) travalledDistance
 
 -- | Return Nothing if the bullet hit an asteroid
 deleteBullet :: [Asteroid] -> Bullet -> Maybe Bullet
-deleteBullet as b@(Bullet loc@(Location lx ly) velocity@(Vector2d vx vy) travalledDistance)  
-      | any (($ 1) . (hit loc 5 . getAsteroidLocation)) as = Nothing
+deleteBullet as b@(Bullet loc@(Location lx ly) velocity@(Vector2d vx vy) travelledDistance)  
+      | or boolList = Nothing -- if the bullet hit any asteroid -> remove bullet
       | otherwise = Just b
+            where
+                  locationsAndRadiusList = map getAsteroidLocation as
+                  boolList = map (hit loc 5) locationsAndRadiusList -- check per asteroid if it was hit by the bullet
 
 partitionAsteroids :: [Bullet] -> [Asteroid] -> ([Asteroid], [Asteroid])
 partitionAsteroids bs = partition (didABulletHitMe bs) 
