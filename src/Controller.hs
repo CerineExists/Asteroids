@@ -60,7 +60,7 @@ step time w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) key
 
 -- Adjusts the list of asteroids
 bulletsAndAsteroids :: World -> World
-bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = score} = w { seed = newSeed, bullets = newLocBullets, asteroids = newAsteroids ++ newLocAsteroids,  score = score}
+bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = score} = w { seed = newSeed, bullets = newLocBullets, asteroids = newAsteroids ++ newLocAsteroids,  score = score + newScore}
             where
               -- first remove the bullets that hit an asteroid and seperate the hit asteroids from the not hit asteroids
               (notHitBullets, hitAsteroids, notHitAsteroids) = didBulletHitAsteroid bs as
@@ -71,6 +71,11 @@ bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = s
               -- split the asteroids that were hit
               (newSeed, newAsteroids) = splitAsteroids seed hitAsteroids
               -- new score calculation
+              newScore = asteroidPoints hitAsteroids
+
+-- get 100 points for every asteroid you hit
+asteroidPoints :: [Asteroid] -> Int
+asteroidPoints asteroids = length asteroids * 100
    
 
 -- | Checks if a bullet hit an asteroid and deletes that bullet

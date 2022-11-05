@@ -21,7 +21,7 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
 data State = Playing | Pause deriving Eq
 
 -- | data type Asteroid
-data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Velocity, directionA :: Direction} deriving Show
+data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Velocity, speed :: Float} deriving Show
 
 -- | data type Player
 data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving Show
@@ -78,19 +78,3 @@ oneAsteroid (Asteroid (Middle x y) r v dir) = "       -- | midden: " ++ show x +
 hit :: Location -> Radius -> (Location, Radius) -> Bool
 hit (Location x1 y1) r1 (Location x2 y2, r2) = (x1-x2)^2 + (y1-y2)^2 <= (r1+r2)^2
 
-
-
-
-
--- | ANIMATION
-{-
-Een paar afbeeldingen die elkaar afwisselen
-
-Stel animatie met ruimteschip:
-
-Wat ik wil is dat ipv alleen 
-
-
-
-
--}
