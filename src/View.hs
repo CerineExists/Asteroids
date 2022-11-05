@@ -4,10 +4,11 @@ module View where
 
 import Graphics.Gloss
 import Model
+import Data.List
 
 -- | Tekenen
 viewBMP :: World -> IO Picture
-viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList r [r1, r2, r3, r4] space a ufo) _ time) 
+viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList r [r1, r2, r3, r4] space a ufoPic) _ enemies activeUFO time) 
                             | state == Playing = return $ pictures scene
                             | otherwise = return $ pictures ( scene ++   [translate (-180) (-35) $ color white (text "Pause")]  )      
                                 where
@@ -15,18 +16,26 @@ viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList 
                                                 rocket] ++
                                                 bullets ++
                                                 asteroids ++
+                                                ufo ++
                                                 scoreText score ++ timeText time
                                         rocket  = translate x y $ rotate (90 - angle degree) whichRocket
                                         bullets = map translateBullets bs
                                         asteroids = map (translateAsteroid a) as 
+                                        ufo     | null attackingUFO = [] 
+                                                | otherwise = map (translateUFO ufoPic) attackingUFO
                                         whichRocket     | 'w' `notElem` keys = r
                                                         | rest == 0 =  r1
                                                         | rest == 1 = r2
                                                         | rest == 2 = r3
                                                         | otherwise = r4 
                                         rest = round (time*24) `mod` 4
-                                        
+                                        attackingUFO = filter amIAttacking enemies
+amIAttacking :: UFO -> Bool
+amIAttacking ufo@UFO{stateUFO = state}  | state == Attacking = True
+                                        | otherwise = False                                        
 -- op basis van elapsedTime één vd 2 sprites te kiezen                                                     
+translateUFO :: Picture -> UFO -> Picture
+translateUFO pic ufo@UFO{locationUFO = loc@(Location x y), size = size, bulletsUFO = bs} = translate x y pic
 
 translateAsteroid :: Picture -> Asteroid -> Picture 
 translateAsteroid pic (Asteroid (Middle x y) radius _ _) =  translate x y $ scale (0.005 * radius) (0.005 * radius) pic

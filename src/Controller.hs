@@ -22,8 +22,8 @@ input :: Event -> World -> IO World
 input e w = return (inputKey e w)
 -- | Adds (w | a | s | d) to keys on keydown, removes them on keyup 
 -- | Adds bullets to a list of bullets on spacedown 
-inputKey :: Event -> World -> World
-inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@(World (Player l d _) _ as bs _ _ _ _ _)   = w {bullets = Bullet l (bulletVelocity (Vector2d 3 3)*d) 0 : bs} -- SHOOT (klopt het?)
+inputKey :: Event -> World -> World                                                   -- (Player l d _) _ as bs _ _ _ _ _) 
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@World {player = p@(Player l d _), asteroids = as, bullets = bs} = w {bullets = Bullet l (bulletVelocity (Vector2d 3 3)*d) 0 : bs} -- SHOOT (klopt het?)
 inputKey (EventKey (SpecialKey KeyEsc) Down _ _) w@World {state = state}  | state == Pause = w {state = Playing}
                                                                           | otherwise = w {state = Pause}
 inputKey (EventKey (Char c) Down _ _) w@World { keys = keys} = w {keys = c : keys}
@@ -39,7 +39,7 @@ pop e xs = case elemIndex e xs of
 
 -- | Update the state of the world
 step :: Float -> World -> IO World
-step time w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics _ _) = do -- todo change momentum
+step time w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics seed enemies activeUFO _) = do -- todo change momentum
      --print (x,y, "b: ", bullets)
      if state == Pause
         then return w

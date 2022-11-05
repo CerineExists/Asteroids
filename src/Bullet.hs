@@ -19,7 +19,7 @@ didABulletHitMe bs a@(Asteroid (Middle x y) radius v@(Vector2d vx vy) _)
 
 -- | Adjusting the speed of a bullet 
 bulletVelocity :: Direction -> Velocity
-bulletVelocity (Vector2d dx dy) = Vector2d (dx*3) (dy*3)
+bulletVelocity (Vector2d dx dy) = Vector2d (dx*4.5) (dy*4.5)
 
 
 -- | adjust the bullets that did NOT HIT anything

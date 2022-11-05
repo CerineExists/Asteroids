@@ -14,6 +14,8 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
                     score :: Int,
                     pics :: PicList,
                     seed :: StdGen,
+                    enemies :: [UFO],
+                    activeUFO :: Int,
                     elapsedTime :: Float
                     } 
 
@@ -31,8 +33,9 @@ data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDis
 
 
 -- | data type UFO and the bullets
-data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, size :: Float, bulletsUFO :: UFOBullets}
+data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, size :: Float, bulletsUFO :: UFOBullets, stateUFO :: StateUFO}
 type UFOBullets = [Bullet]
+data StateUFO = Waiting | Attacking | Killed deriving Eq
 
 -- | (data)types that are used in the datatypes above
 data Middle = Middle Float Float deriving Show-- x y coordinates of the middle point
