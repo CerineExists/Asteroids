@@ -39,11 +39,11 @@ pop e xs = case elemIndex e xs of
 
 -- | Update the state of the world
 step :: Float -> World -> IO World
-step time w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics _ _) = do -- todo change momentum
-     --print (x,y, "b: ", bullets)
-     if state == Pause
-        then return w
-        else return $ (adjustTime . adjustScore . bulletsAndAsteroids . momentum . foldr move w) keys
+step time  w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics _ _) = do -- todo change momentum
+     case state of 
+      Playing -> return $ (adjustTime . adjustScore . bulletsAndAsteroids . momentum . foldr move w) keys
+      Dead    -> gameover w
+      _       -> return w
     where
         -- Moves the player in accordance with the characters in the keys list
         move ::  Char -> World -> World
@@ -97,3 +97,7 @@ adjustScore :: World -> World -- todo add enemy and asteroid death events
 adjustScore w@World{score = score} = w {score = score + 1}
 
 
+gameover :: World -> IO World
+gameover w = do
+  writeFile "scores.txt" $ "Your score was: " ++ show (score w)
+  return w
