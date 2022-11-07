@@ -38,6 +38,7 @@ pop e xs = case elemIndex e xs of
 
 
 -- | Update the state of the world
+
 step :: Float -> World -> IO World
 step time  w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics _ _) = do -- todo change momentum
      case state of 
@@ -56,12 +57,16 @@ step time  w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) ke
         adjustTime :: World -> World
         adjustTime w@World {elapsedTime = t} = w {elapsedTime = t + time}
 
+
         
 
 -- Adjusts the list of asteroids
 bulletsAndAsteroids :: World -> World
-bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = score} = w { seed = newSeed, bullets = newLocBullets, asteroids = newAsteroids ++ newLocAsteroids,  score = score + newScore}
+bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = score, state = state} = 
+                         w {seed = newSeed, bullets = newLocBullets, asteroids = newAsteroids ++ newLocAsteroids,  score = score + newScore, state = newState}
             where
+              --check if the player hit an asteroid
+              newState = if any (playerHitAsteroid (player w)) as then Dead else state
               -- first remove the bullets that hit an asteroid and seperate the hit asteroids from the not hit asteroids
               (notHitBullets, hitAsteroids, notHitAsteroids) = didBulletHitAsteroid bs as
               -- give the bullets that did not hit anything a new location
@@ -96,8 +101,10 @@ clamp x val = max (-x) (min x val)
 adjustScore :: World -> World -- todo add enemy and asteroid death events
 adjustScore w@World{score = score} = w {score = score + 1}
 
-
 gameover :: World -> IO World
 gameover w = do
   writeFile "scores.txt" $ "Your score was: " ++ show (score w)
   return w
+-- function that checks if player hit an asteroid
+playerHitAsteroid :: Player -> Asteroid -> Bool
+playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Middle ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2
