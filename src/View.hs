@@ -33,7 +33,7 @@ viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList 
 
                                         msg = case state of
                                                 Pause -> [translate (-20) 0 $ scale 0.3 0.3 $ color white $ text "Pause"]
-                                                Dead ->  [translate (-25)  0 $ scale 0.3 0.3 $ color white $ text "GAME OVER"]
+                                                Dead ->  [translate (-30)  0 $ scale 0.3 0.3 $ color white $ text "GAME OVER"]
                                         amIAttacking :: UFO -> Bool
                                         amIAttacking ufo@UFO{stateUFO = state}  | state == Attacking = True
                                                                                 | otherwise = False                                        
