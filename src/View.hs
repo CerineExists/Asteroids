@@ -10,7 +10,7 @@ import Data.List
 viewBMP :: World -> IO Picture
 viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList r [r1, r2, r3, r4] space a ufoPic) _ enemies activeUFO time) 
                             | state == Playing = return $ pictures scene
-                            | otherwise = return $ pictures ( scene ++   [translate (-180) (-35) $ color white (text "Pause")]  )      
+                            | otherwise = return $ pictures ( scene ++ msg)      
                                 where
                                         scene = [space,  
                                                 rocket] ++
@@ -30,9 +30,17 @@ viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList 
                                                         | otherwise = r4 
                                         rest = round (time*24) `mod` 4
                                         attackingUFO = filter amIAttacking enemies
-amIAttacking :: UFO -> Bool
-amIAttacking ufo@UFO{stateUFO = state}  | state == Attacking = True
-                                        | otherwise = False                                        
+
+                                        msg = case state of
+                                                Pause -> [translate (-20) 0 $ scale 0.3 0.3 $ color white $ text "Pause"]
+                                                Dead ->  [translate (-25)  0 $ scale 0.3 0.3 $ color white $ text "GAME OVER"]
+                                        amIAttacking :: UFO -> Bool
+                                        amIAttacking ufo@UFO{stateUFO = state}  | state == Attacking = True
+                                                                                | otherwise = False                                        
+
+                                        
+
+                                        
 -- op basis van elapsedTime één vd 2 sprites te kiezen                                                     
 translateUFO :: Picture -> UFO -> Picture
 translateUFO pic ufo@UFO{locationUFO = loc@(Location x y), size = size, bulletsUFO = bs} = translate x y pic

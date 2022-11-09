@@ -20,8 +20,7 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
                     } 
 
 
-data State = Playing | Pause | Dead deriving Eq
-
+data State = Playing | Pause | Dead | Done deriving (Eq, Show)
 -- | data type Asteroid
 data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Velocity, speed :: Float} deriving Show
 
