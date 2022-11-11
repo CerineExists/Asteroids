@@ -70,9 +70,9 @@ splitAsteroid seed a@(Asteroid m radius (Vector2d vx vy) speed)
                                                 (factor2, nextG3) = randomR(1.1, 1.5) nextG2
 
 
-                                                (x_Dir2, y_Dir2)    = degreeToVector degree2
+                                                Vector2d x_Dir2 y_Dir2 = degreeToVector degree2
                                                 (degree2, nextG2)   = randomR(0,360) nextG1
-                                                (x_Dir1, y_Dir1)    = degreeToVector degree1
+                                                Vector2d x_Dir1 y_Dir1  = degreeToVector degree1
                                                 (degree1, nextG1)   = randomR (0, 360) seed
                                               
 

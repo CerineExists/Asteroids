@@ -16,16 +16,16 @@ findNewLocation (Location x y) (Vector2d mx my) = Location newX newY
 mkVector :: Location -> Location -> Vector2d
 mkVector (Location x1 y1) (Location x2 y2) =  normalize (Vector2d (x2 - x1) (y2 - y1))
 
-degreeToVector :: Float -> (Float, Float)
-degreeToVector degree = normalize (x, y)
+degreeToVector :: Float -> Vector2d
+degreeToVector degree = normalize (Vector2d x y)
                             where
                                 x = cos radians
                                 y = sin radians
                                 radians = degree * (pi / 180)
 
 
-normalize :: (Float, Float) -> (Float, Float)
-normalize (x, y) = (newX, newY)
+normalize :: Vector2d -> Vector2d
+normalize (Vector2d x y) = Vector2d newX newY
                         where
                             newX = x * multiplicationFactor
                             newY = y * multiplicationFactor

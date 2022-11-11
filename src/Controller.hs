@@ -61,21 +61,30 @@ step time  w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) ke
        
 -- | It adjusts the enemies (UFO's)
 adjustEnemies :: World -> World
-adjustEnemies w@World{player = p, bullets = bs, enemies = ufos, elapsedTime = t} | isNothing maybeUFO = w -- if there is no active UFO, return immediately
-                                                                | otherwise = w {bullets = newBullets, enemies = newUFOS}
-                                                                    where 
-                                                                      newUFOS = [newUFO2]
-                                                                      newUFO2 = moveUFO newUFO1 p -- CHECK NOG OF DE UFO NIET GEKILLED IS!! of doe ín de functie
-                                                                      (newBullets, newUFO1) = didABulletHitUFO bs (fromJust maybeUFO) -- did a bullet hit the active UFO?
-                                                                      maybeUFO = isThereAnActiveUFO ufos -- check if there is an active ufo
-                                                                      -- nog beweging van de UFO's implementeren
-                                                                      -- nog spawnen van ufo's implementeren
-                                                                      -- schieten vd ufo's implementeren
+adjustEnemies w@World{player = p@Player {location = loc}, bullets = bs, enemies = ufos, elapsedTime = time} 
+                                              | isNothing maybeUFO = w -- if there is no active UFO, return immediately
+                                              | otherwise = w {bullets = newBullets, enemies = newUFOS}
+                                                      where 
+                                                        newUFOS = [newUFO3]
+                                                        newUFO2 = moveUFO newUFO1 p -- CHECK NOG OF DE UFO NIET GEKILLED IS!! of doe ín de functie
+                                                        (newBullets, newUFO1) = didABulletHitUFO bs (fromJust maybeUFO) -- did a bullet hit the active UFO?
+                                                        maybeUFO = isThereAnActiveUFO ufos -- check if there is an active ufo
+                                                        -- nog spawnen van ufo's implementeren
+                                                        -- schieten vd ufo's implementeren shootingUFO w
 
-                                                                      -- velocity aanpassen? eens in de 2 seconden
-                                                                      newUFO3 | even time = newUFO2 -- Velocity blijft hetzelfde
-                                                                              | otherwise = newVelocity
+                                                        -- velocity aanpassen? eens in de 2 seconden
+                                                        newUFO3 | not $ minimumDistance newUFO2 loc = standStill newUFO2
+                                                                | otherwise                       = newVelocity newUFO2 loc 
+                                                        
 
+minimumDistance :: UFO -> Location -> Bool
+minimumDistance ufo@UFO{locationUFO = loc@(Location x1 y1)} (Location x2 y2)  | sqrt (dXSquare + dYSquare) >= 100 = True
+                                                                              | otherwise = False
+                                                              where
+                                                                dXSquare = deltaX * deltaX
+                                                                dYSquare = deltaY * deltaY
+                                                                deltaX = x2 - x1
+                                                                deltaY = y2 - y1
 
                                       
 

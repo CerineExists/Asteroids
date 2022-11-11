@@ -16,18 +16,34 @@ isThereAnActiveUFO (x@UFO{stateUFO = s}:xs)   | s == Attacking = Just x
                                               | otherwise = isThereAnActiveUFO xs
 
 
+-- | Shooting of the UFO
+shootingUFO :: World -> UFO -> World
+shootingUFO  w@World{player = p@Player {location = loc}, bullets = bs, enemies = ufos, elapsedTime = time}  = undefined
 
--- gebruik intelligentie!! Ga richting P bewegen
+
+
+
+
+
+
+-- | Movements of the UFO
 moveUFO :: UFO -> Player -> UFO
 moveUFO u@UFO {locationUFO = locU, velocityUFO = velU} p@Player {location = locP} =  u {locationUFO = findNewLocation locU velU}
 
 
 newVelocity :: UFO -> Location -> UFO
-newVelocity u@UFO {locationUFO = locU, velocityUFO = velU, speedUFO = speed} locP@(Location lx ly) = undefined
-
+newVelocity u@UFO {locationUFO = locU, velocityUFO = velU, speedUFO = speed} locP@(Location lx ly) = u {velocityUFO = newVelocity}
                                                                                 where
                                                                                   newDirection = mkVector locU locP
-                                                                                  newVelocity = 
+                                                                                  newVelocity = multiplyVec speed newDirection
+
+
+standStill :: UFO -> UFO
+standStill u = u{velocityUFO = Vector2d 0 0}
+
+
+multiplyVec :: Float -> Vector2d -> Vector2d
+multiplyVec speed (Vector2d x y) = Vector2d (speed*x) (speed*y)
 
 
 
