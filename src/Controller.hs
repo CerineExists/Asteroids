@@ -6,6 +6,7 @@ import Player
 import Asteroid
 import Bullet
 import HelpFunctions
+import Enemy
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
@@ -42,7 +43,7 @@ pop e xs = case elemIndex e xs of
 step :: Float -> World -> IO World
 step time  w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics seed enemies activeUFO _) = do -- todo change momentum
      case state of 
-      Playing -> return $ (adjustTime . adjustScore . bulletsAndAsteroids . momentum . foldr move w) keys
+      Playing -> return $ (adjustTime . adjustScore . adjustEnemies . bulletsAndAsteroids . momentum . foldr move w) keys
       Dead    -> gameover w
       _       -> return w
     where
@@ -52,15 +53,29 @@ step time  w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) ke
         -- Changes the momentum with respect to velocity
         momentum :: World -> World
         momentum w@World{player = Player (Location x y          ) (Vector2d dx dy) (Vector2d vx                      vy)} =
-                 w      {player = Player (Location (x+vx) (y+vy)) (Vector2d dx dy) (Vector2d (clamp 15 ((vx+dx)/2)) (clamp 15 ((dy+vy)/2)))}
+                 w      {player = Player (Location (x+vx) (y+vy)) (Vector2d dx dy) (Vector2d (clamp 30 ((vx+dx)/2)) (clamp 30 ((dy+vy)/2)))}
 
         adjustTime :: World -> World
         adjustTime w@World {elapsedTime = t} = w {elapsedTime = t + time}
 
+       
+-- | It adjusts the enemies (UFO's)
+adjustEnemies :: World -> World
+adjustEnemies w@World{player = p, bullets = bs, enemies = ufos} | isNothing maybeUFO = w -- if there is no active UFO, return immediately
+                                                                | otherwise = w {bullets = newBullets, enemies = newUFOS}
+                                                                    where 
+                                                                      newUFOS = [newUFO2]
+                                                                      newUFO2 = moveUFO newUFO1 p -- CHECK NOG OF DE UFO NIET GEKILLED IS!! of doe ín de functie
+                                                                      (newBullets, newUFO1) = didABulletHitUFO bs (fromJust maybeUFO) -- did a bullet hit the active UFO?
+                                                                      maybeUFO = isThereAnActiveUFO ufos -- check if there is an active ufo
+                                                                      -- nog beweging van de UFO's implementeren
+                                                                      -- nog spawnen van ufo's implementeren
 
-        
+                                      
 
--- Adjusts the list of asteroids
+
+
+-- Adjusts the list of asteroids and bullets in World
 bulletsAndAsteroids :: World -> World
 bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = score, state = state} = 
                          w {seed = newSeed, bullets = newLocBullets, asteroids = newAsteroids ++ newLocAsteroids,  score = score + newScore, state = newState}

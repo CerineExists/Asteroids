@@ -43,7 +43,7 @@ viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList 
                                         
 -- op basis van elapsedTime één vd 2 sprites te kiezen                                                     
 translateUFO :: Picture -> UFO -> Picture
-translateUFO pic ufo@UFO{locationUFO = loc@(Location x y), size = size, bulletsUFO = bs} = translate x y pic
+translateUFO pic ufo@UFO{locationUFO = loc@(Location x y), size = size, bulletsUFO = bs} = translate x y (scale (0.1 * size) (0.1 * size) pic)
 
 translateAsteroid :: Picture -> Asteroid -> Picture 
 translateAsteroid pic (Asteroid (Middle x y) radius _ _) =  translate x y $ scale (0.005 * radius) (0.005 * radius) pic
