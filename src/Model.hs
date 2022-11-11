@@ -32,7 +32,7 @@ data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDis
 
 
 -- | data type UFO and the bullets
-data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, size :: Float, bulletsUFO :: UFOBullets, stateUFO :: StateUFO}
+data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, speedUFO :: Float, size :: Float, bulletsUFO :: UFOBullets, stateUFO :: StateUFO}
 type UFOBullets = [Bullet]
 data StateUFO = Waiting | Attacking | Killed deriving Eq
 

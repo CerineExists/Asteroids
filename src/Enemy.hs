@@ -22,7 +22,12 @@ moveUFO :: UFO -> Player -> UFO
 moveUFO u@UFO {locationUFO = locU, velocityUFO = velU} p@Player {location = locP} =  u {locationUFO = findNewLocation locU velU}
 
 
+newVelocity :: UFO -> Location -> UFO
+newVelocity u@UFO {locationUFO = locU, velocityUFO = velU, speedUFO = speed} locP@(Location lx ly) = undefined
 
+                                                                                where
+                                                                                  newDirection = mkVector locU locP
+                                                                                  newVelocity = 
 
 
 

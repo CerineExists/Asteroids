@@ -61,7 +61,7 @@ step time  w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) ke
        
 -- | It adjusts the enemies (UFO's)
 adjustEnemies :: World -> World
-adjustEnemies w@World{player = p, bullets = bs, enemies = ufos} | isNothing maybeUFO = w -- if there is no active UFO, return immediately
+adjustEnemies w@World{player = p, bullets = bs, enemies = ufos, elapsedTime = t} | isNothing maybeUFO = w -- if there is no active UFO, return immediately
                                                                 | otherwise = w {bullets = newBullets, enemies = newUFOS}
                                                                     where 
                                                                       newUFOS = [newUFO2]
@@ -70,6 +70,12 @@ adjustEnemies w@World{player = p, bullets = bs, enemies = ufos} | isNothing mayb
                                                                       maybeUFO = isThereAnActiveUFO ufos -- check if there is an active ufo
                                                                       -- nog beweging van de UFO's implementeren
                                                                       -- nog spawnen van ufo's implementeren
+                                                                      -- schieten vd ufo's implementeren
+
+                                                                      -- velocity aanpassen? eens in de 2 seconden
+                                                                      newUFO3 | even time = newUFO2 -- Velocity blijft hetzelfde
+                                                                              | otherwise = newVelocity
+
 
                                       
 

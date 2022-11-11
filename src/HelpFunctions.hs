@@ -12,7 +12,10 @@ findNewLocation (Location x y) (Vector2d mx my) = Location newX newY
                      | y > 250 = -250 + my
                      | otherwise = y + my
 
-                     
+
+mkVector :: Location -> Location -> Vector2d
+mkVector (Location x1 y1) (Location x2 y2) =  normalize (Vector2d (x2 - x1) (y2 - y1))
+
 degreeToVector :: Float -> (Float, Float)
 degreeToVector degree = normalize (x, y)
                             where
