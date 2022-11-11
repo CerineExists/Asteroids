@@ -15,7 +15,8 @@ import Debug.Trace (trace)
 import Data.Foldable
 import System.Random
 import Data.Maybe
-
+import System.Directory
+import System.FilePath.Posix (takeDirectory)
 
 -- | Handle user input
 input :: Event -> World -> IO World
@@ -102,9 +103,16 @@ adjustScore :: World -> World -- todo add enemy and asteroid death events
 adjustScore w@World{score = score} = w {score = score + 1}
 
 gameover :: World -> IO World
-gameover w = do
-  writeFile "scores.txt" $ "Your score was: " ++ show (score w)
-  return w
+gameover w@World{state = s} = do
+  let oldPath = "scores.txt"
+  lns <- readFile oldPath
+  let newPath = "newscores.txt" 
+  let newLns = lns ++ "Your score was: " ++ show (score w) ++ "\n"
+  createDirectoryIfMissing True $ takeDirectory newPath
+  writeFile newPath newLns
+  renameFile newPath oldPath 
+  return w{state = Done}
+
 -- function that checks if player hit an asteroid
 playerHitAsteroid :: Player -> Asteroid -> Bool
 playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Middle ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2
