@@ -53,10 +53,10 @@ initialWorld raket runningRockets space asteroid ufo seed =
 
 -- The initial asteroidlist
 asteroidList :: [Asteroid]
-asteroidList =  [   Asteroid (Middle (-150) 200) 10 (Vector2d 3 0) 3, 
-                    Asteroid (Middle (-300) 10) 20 (Vector2d 4 0) 4, 
-                    Asteroid (Middle (-15) 200) 40 (Vector2d 5 0) 5,  
-                    Asteroid (Middle 30 100) 40 (Vector2d 6 0) 6
+asteroidList =  [   Asteroid (Location (-150) 200) 10 (Vector2d 3 0) 3, 
+                    Asteroid (Location (-300) 10) 20 (Vector2d 4 0) 4, 
+                    Asteroid (Location (-15) 200) 40 (Vector2d 5 0) 5,  
+                    Asteroid (Location 30 100) 40 (Vector2d 6 0) 6
                 ] 
 
 

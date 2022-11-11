@@ -27,14 +27,13 @@ viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList 
 
                                         msg = case state of
                                                 Pause -> [translate (-20) 0 $ scale 0.3 0.3 $ color white $ text "Pause"]
-                                                Dead ->  [translate (-25)  0 $ scale 0.3 0.3 $ color white $ text "GAME OVER"]
-                                                _ -> []
+                                                _ ->  [translate (-25)  0 $ scale 0.3 0.3 $ color white $ text "GAME OVER"]
 
                                         
 -- op basis van elapsedTime één vd 2 sprites te kiezen                                                     
 
 translateAsteroid :: Picture -> Asteroid -> Picture 
-translateAsteroid pic (Asteroid (Middle x y) radius _ _) =  translate x y $ scale (0.005 * radius) (0.005 * radius) pic
+translateAsteroid pic (Asteroid (Location x y) radius _ _) =  translate x y $ scale (0.005 * radius) (0.005 * radius) pic
 
 translateBullets :: Bullet -> Picture
 translateBullets (Bullet (Location x y) _ _) = translate x y (color green (thickCircle 3 5))

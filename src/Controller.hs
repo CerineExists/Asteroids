@@ -6,17 +6,18 @@ import Player
 import Asteroid
 import Bullet
 import HelpFunctions
+import JsonInstance
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
-import System.Random
 import Data.List
 import Debug.Trace (trace)
-import Data.Foldable
+import Data.Foldable  
 import System.Random
 import Data.Maybe
 import System.Directory
 import System.FilePath.Posix (takeDirectory)
+import Text.JSON
 
 -- | Handle user input
 input :: Event -> World -> IO World
@@ -107,12 +108,17 @@ gameover w@World{state = s} = do
   let oldPath = "scores.txt"
   lns <- readFile oldPath
   let newPath = "newscores.txt" 
-  let newLns = lns ++ "Your score was: " ++ show (score w) ++ "\n"
+  let newLns = encode s--lns ++ "Your score was: " ++ show (score w) ++ "\n"
   createDirectoryIfMissing True $ takeDirectory newPath
   writeFile newPath newLns
   renameFile newPath oldPath 
+
+  --print(encode w) 
+
   return w{state = Done}
 
 -- function that checks if player hit an asteroid
 playerHitAsteroid :: Player -> Asteroid -> Bool
-playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Middle ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2
+playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Location ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2
+
+-- makes an instance of the JSON class for the world
