@@ -52,7 +52,7 @@ translateUFO :: Picture -> UFO -> Picture
 translateUFO pic ufo@UFO{locationUFO = loc@(Location x y), size = size, bulletsUFO = bs} = translate x y (scale (0.1 * size) (0.1 * size) pic)
 
 translateUFOBullets :: Bullet -> Picture
-translateUFOBullets b@Bullet{locationB = loc@(Location x y), radiusB = radius} = translate x y (color white (thickCircle 3 radius))
+translateUFOBullets b@Bullet{locationB = loc@(Location x y), radiusB = radius} = translate x y (color white (thickCircle 2 radius))
 
 translateAsteroid :: Picture -> Asteroid -> Picture 
 translateAsteroid pic (Asteroid (Middle x y) radius _ _) =  translate x y $ scale (0.005 * radius) (0.005 * radius) pic

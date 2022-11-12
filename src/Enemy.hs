@@ -18,12 +18,12 @@ bulletsOf u@UFO {bulletsUFO = bs} = bs
 -- | Shooting of the UFO
 shootingUFO :: World -> UFO -> UFO
 shootingUFO w@World{player = p@Player {location = locP@(Location px py)}, elapsedTime = time} 
-            u@UFO {locationUFO = locU@(Location ux uy), bulletsUFO = bs } = 
-              -- adjust eerst de bullets die er al zijn.
-              
-              u {bulletsUFO = Bullet locU (bulletVelocity (findBulletDirection locU locP)) 2.5 : newBulletLocs}
-              where
-                newBulletLocs = adjustBulletLocations bs
+            u@UFO {locationUFO = locU@(Location ux uy), bulletsUFO = bs, lastShotAt = lastShot } 
+                      | time - lastShot < 2 =  u {bulletsUFO = newBulletLocs} -- do NOT shot a new bullet    
+                      | otherwise = u {bulletsUFO = newBullet : newBulletLocs, lastShotAt = time}
+                            where
+                              newBullet = Bullet locU (bulletVelocity (findBulletDirection locU locP)) 2.5
+                              newBulletLocs = adjustBulletLocations bs  -- adjust the location of the bullets that are already there
 
 findBulletDirection :: Location -> Location -> Direction
 findBulletDirection (Location x1 y1) (Location x2 y2) = normalize $ Vector2d (x2 - x1) (y2 - y1)

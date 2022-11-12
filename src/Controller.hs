@@ -59,22 +59,31 @@ step time  w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) ke
         adjustTime w@World {elapsedTime = t} = w {elapsedTime = t + time}
 
        
--- | It adjusts the enemies (UFO's)
+-- | It adjusts the enemies (UFO's) and their corresponding ufoBullets
 adjustEnemies :: World -> World
 adjustEnemies w@World{player = p@Player {location = loc}, bullets = bs, enemies = ufos, elapsedTime = time} 
                                               | isNothing maybeUFO = w -- if there is no active UFO, return immediately
                                               | otherwise = w {bullets = newBullets, enemies = newUFOS}
                                                       where 
-                                                        newUFOS = [newUFO4]
-                                                        newUFO2 = moveUFO newUFO1 p -- CHECK NOG OF DE UFO NIET GEKILLED IS!! of doe ín de functie
-                                                        (newBullets, newUFO1) = didABulletHitUFO bs (fromJust maybeUFO) -- did a bullet hit the active UFO?
-                                                        maybeUFO = isThereAnActiveUFO ufos -- check if there is an active ufo
-                                                        -- nog spawnen van ufo's implementeren
-                                                        -- schieten vd ufo's implementeren: 
-                                                        newUFO4 = shootingUFO w newUFO3 -- nieuwe kogels van de ufo
-                                                        -- velocity aanpassen? eens in de 2 seconden
+                                                        -- did a bullet hit the active UFO?
+                                                        (newBullets, newUFO1) = didABulletHitUFO bs (fromJust maybeUFO) 
+                                                        -- Calculate new location for the UFO:
+                                                        newUFO2 = moveUFO newUFO1 p 
+                                                        -- Adjust the velocity based on where the player is:
                                                         newUFO3 | not $ minimumDistance newUFO2 loc = standStill newUFO2
-                                                                | otherwise                       = newVelocity newUFO2 loc 
+                                                                | otherwise                       = newVelocity newUFO2 loc                                                         
+                                                        newUFO4 = shootingUFO w newUFO3 -- nieuwe kogels van de ufo
+                                                        newUFOS = [newUFO4]                                     
+                                                        
+                                                        maybeUFO = isThereAnActiveUFO ufos -- check if there is an active ufo
+
+                                                        -- nog spawnen van ufo's implementeren
+                                                        -- Eerste UFO pas laten komen als er minimaal ?300? punten zijn gehaald. 
+                                                        -- Tweede UFO bij een minimum van ?600? punten EN DE VORIGE UFO MOET DOOD ZIJN
+                                                        -- (DAT IS HEEL BELANGRIJK, WANT ALLES IS EROP GEBOUWD DAT ER MAAR 1 UFO TEGELIJK ACTIEF KAN ZIJN)
+                                                        -- Derde UFO ook pas laten spawnen als vorige UFO dood is
+                                           
+                                                       
                                                         
 
 minimumDistance :: UFO -> Location -> Bool
