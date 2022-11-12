@@ -14,6 +14,8 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
                     score :: Int,
                     pics :: PicList,
                     seed :: StdGen,
+                    enemies :: [UFO],
+                    activeUFO :: Int,
                     elapsedTime :: Float
                     } 
 
@@ -26,12 +28,13 @@ data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Veloci
 data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving Show
 
 -- | data type Bullet
-data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDistance :: Float} deriving Show-- Bullet kan maximaal 50f afleggen
+data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, radiusB :: Float} deriving Show-- Bullet kan maximaal 50f afleggen
 
 
 -- | data type UFO and the bullets
-data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, size :: Float, bulletsUFO :: UFOBullets}
+data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, speedUFO :: Float, size :: Float, bulletsUFO :: UFOBullets, stateUFO :: StateUFO, lastShotAt :: Float}
 type UFOBullets = [Bullet]
+data StateUFO = Waiting | Attacking | Killed deriving Eq
 
 -- | (data)types that are used in the datatypes above
 data Middle = Middle Float Float deriving Show-- x y coordinates of the middle point

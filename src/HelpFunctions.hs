@@ -1,26 +1,40 @@
 module HelpFunctions where
 import Model 
--- | remove Just from the input
-noJust :: Maybe a -> a
-noJust (Just a) = a
-noJust Nothing = undefined --never happens
 
--- | Check if the input == Nothing
-isItNothing :: Maybe a -> Bool
-isItNothing Nothing = True
-isItNothing _ = False
+-- | Find the new location of the player based on it's current location, direction and velocity
+findNewLocation :: Location -> Velocity -> Location 
+findNewLocation (Location x y) (Vector2d mx my) = Location newX newY
+            where
+                newX | x < -500 = 500 + mx 
+                     | x > 500 = -500 + mx
+                     | otherwise = x + mx
+                newY |  y < -250 = 250 + my
+                     | y > 250 = -250 + my
+                     | otherwise = y + my
+
+isThereAnActiveUFO :: [UFO] -> Maybe UFO
+isThereAnActiveUFO [] = Nothing
+isThereAnActiveUFO (x@UFO{stateUFO = s}:xs)   | s == Attacking = Just x
+                                              | otherwise = isThereAnActiveUFO xs
 
 
-degreeToVector :: Float -> (Float, Float)
-degreeToVector degree = normalize (x, y)
+-- | Adjusting the speed of a bullet 
+bulletVelocity :: Direction -> Velocity
+bulletVelocity (Vector2d dx dy) = Vector2d (dx*15) (dy*15)
+
+mkVector :: Location -> Location -> Vector2d
+mkVector (Location x1 y1) (Location x2 y2) =  normalize (Vector2d (x2 - x1) (y2 - y1))
+
+degreeToVector :: Float -> Vector2d
+degreeToVector degree = normalize (Vector2d x y)
                             where
                                 x = cos radians
                                 y = sin radians
                                 radians = degree * (pi / 180)
 
 
-normalize :: (Float, Float) -> (Float, Float)
-normalize (x, y) = (newX, newY)
+normalize :: Vector2d -> Vector2d
+normalize (Vector2d x y) = Vector2d newX newY
                         where
                             newX = x * multiplicationFactor
                             newY = y * multiplicationFactor
@@ -36,5 +50,7 @@ getAsteroidLocation (Asteroid (Middle x y) radius _ _) = (Location x y, radius)
 -- get the location of a bullet
 getBulletLocation :: Bullet -> (Location, Radius)
 getBulletLocation (Bullet (Location x y) _ _) = (Location x y, 5)
+
+
 
 
