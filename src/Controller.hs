@@ -17,7 +17,8 @@ import System.Random
 import Data.Maybe
 import System.Directory
 import System.FilePath.Posix (takeDirectory)
-import Text.JSON
+import Data.Aeson
+
 
 -- | Handle user input
 input :: Event -> World -> IO World
@@ -106,14 +107,15 @@ adjustScore w@World{score = score} = w {score = score + 1}
 gameover :: World -> IO World
 gameover w@World{state = s} = do
   let oldPath = "scores.txt"
+  createDirectoryIfMissing True $ takeDirectory oldPath
   lns <- readFile oldPath
   let newPath = "newscores.txt" 
-  let newLns = encode s--lns ++ "Your score was: " ++ show (score w) ++ "\n"
+  let newLns = lns ++ "Your score was: " ++ show (score w) ++ "\n"
   createDirectoryIfMissing True $ takeDirectory newPath
   writeFile newPath newLns
   renameFile newPath oldPath 
 
-  --print(encode w) 
+  doJSON w 
 
   return w{state = Done}
 
@@ -121,4 +123,13 @@ gameover w@World{state = s} = do
 playerHitAsteroid :: Player -> Asteroid -> Bool
 playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Location ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2
 
--- makes an instance of the JSON class for the world
+-- makes a file with the world as a JSON object
+doJSON :: World -> IO ()
+doJSON w = do
+  let path = "world.json"
+  let newPath = "newworld.json"
+  createDirectoryIfMissing True $ takeDirectory path
+  createDirectoryIfMissing True $ takeDirectory newPath
+  encodeFile newPath w
+  renameFile newPath path
+
