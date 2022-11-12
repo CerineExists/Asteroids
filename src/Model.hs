@@ -28,7 +28,7 @@ data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Veloci
 data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving Show
 
 -- | data type Bullet
-data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDistance :: Float} deriving Show-- Bullet kan maximaal 50f afleggen
+data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, radiusB :: Float} deriving Show-- Bullet kan maximaal 50f afleggen
 
 
 -- | data type UFO and the bullets

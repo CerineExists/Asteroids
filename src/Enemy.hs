@@ -4,25 +4,29 @@ module Enemy where
 
 import Model
 import HelpFunctions
+import Bullet
 
 import Data.Foldable (Foldable(foldr'))
 import System.Random
 import Data.Maybe
 import Data.List
 
-isThereAnActiveUFO :: [UFO] -> Maybe UFO
-isThereAnActiveUFO [] = Nothing
-isThereAnActiveUFO (x@UFO{stateUFO = s}:xs)   | s == Attacking = Just x
-                                              | otherwise = isThereAnActiveUFO xs
 
+bulletsOf :: UFO -> [Bullet]
+bulletsOf u@UFO {bulletsUFO = bs} = bs
 
 -- | Shooting of the UFO
-shootingUFO :: World -> UFO -> World
-shootingUFO  w@World{player = p@Player {location = loc}, bullets = bs, enemies = ufos, elapsedTime = time}  = undefined
+shootingUFO :: World -> UFO -> UFO
+shootingUFO w@World{player = p@Player {location = locP@(Location px py)}, elapsedTime = time} 
+            u@UFO {locationUFO = locU@(Location ux uy), bulletsUFO = bs } = 
+              -- adjust eerst de bullets die er al zijn.
+              
+              u {bulletsUFO = Bullet locU (bulletVelocity (findBulletDirection locU locP)) 2.5 : newBulletLocs}
+              where
+                newBulletLocs = adjustBulletLocations bs
 
-
-
-
+findBulletDirection :: Location -> Location -> Direction
+findBulletDirection (Location x1 y1) (Location x2 y2) = normalize $ Vector2d (x2 - x1) (y2 - y1)
 
 
 
@@ -73,7 +77,7 @@ ufoIsKilled ufo@UFO {stateUFO = s} = ufo {stateUFO = Killed}
 didBulletHitMe :: [Bullet] -> UFO -> ([Bullet], Bool)
 didBulletHitMe [] _ = ([], False)
 didBulletHitMe (b@Bullet{locationB = locB}:bs) ufo@UFO{locationUFO = locUFO, size = rUFO}  
-                                              | hit locB 5 (locUFO, rUFO)   = (bs, True)            -- if bullet hit the UFO
+                                              | hit locB 5 (locUFO, rUFO*8)   = (bs, True)            -- if bullet hit the UFO
                                               | otherwise                   = (b : bullets, bools)  -- b did not hit the UFO
                                                 where
                                                   (bullets, bools) = didBulletHitMe bs ufo

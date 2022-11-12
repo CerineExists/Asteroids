@@ -12,6 +12,15 @@ findNewLocation (Location x y) (Vector2d mx my) = Location newX newY
                      | y > 250 = -250 + my
                      | otherwise = y + my
 
+isThereAnActiveUFO :: [UFO] -> Maybe UFO
+isThereAnActiveUFO [] = Nothing
+isThereAnActiveUFO (x@UFO{stateUFO = s}:xs)   | s == Attacking = Just x
+                                              | otherwise = isThereAnActiveUFO xs
+
+
+-- | Adjusting the speed of a bullet 
+bulletVelocity :: Direction -> Velocity
+bulletVelocity (Vector2d dx dy) = Vector2d (dx*15) (dy*15)
 
 mkVector :: Location -> Location -> Vector2d
 mkVector (Location x1 y1) (Location x2 y2) =  normalize (Vector2d (x2 - x1) (y2 - y1))

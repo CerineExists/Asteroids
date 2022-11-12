@@ -23,8 +23,8 @@ input :: Event -> World -> IO World
 input e w = return (inputKey e w)
 -- | Adds (w | a | s | d) to keys on keydown, removes them on keyup 
 -- | Adds bullets to a list of bullets on spacedown 
-inputKey :: Event -> World -> World                                                   -- (Player l d _) _ as bs _ _ _ _ _) 
-inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@World {player = p@(Player l d _), asteroids = as, bullets = bs} = w {bullets = Bullet l (bulletVelocity (Vector2d 3 3)*d) 0 : bs} -- SHOOT (klopt het?)
+inputKey :: Event -> World -> World                                           
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) w@World {player = p@(Player l d _), asteroids = as, bullets = bs} = w {bullets = Bullet l (bulletVelocity (Vector2d 1 1)*d) 5 : bs} -- SHOOT (klopt het?)
 inputKey (EventKey (SpecialKey KeyEsc) Down _ _) w@World {state = state}  | state == Pause = w {state = Playing}
                                                                           | otherwise = w {state = Pause}
 inputKey (EventKey (Char c) Down _ _) w@World { keys = keys} = w {keys = c : keys}
@@ -65,20 +65,20 @@ adjustEnemies w@World{player = p@Player {location = loc}, bullets = bs, enemies 
                                               | isNothing maybeUFO = w -- if there is no active UFO, return immediately
                                               | otherwise = w {bullets = newBullets, enemies = newUFOS}
                                                       where 
-                                                        newUFOS = [newUFO3]
+                                                        newUFOS = [newUFO4]
                                                         newUFO2 = moveUFO newUFO1 p -- CHECK NOG OF DE UFO NIET GEKILLED IS!! of doe ín de functie
                                                         (newBullets, newUFO1) = didABulletHitUFO bs (fromJust maybeUFO) -- did a bullet hit the active UFO?
                                                         maybeUFO = isThereAnActiveUFO ufos -- check if there is an active ufo
                                                         -- nog spawnen van ufo's implementeren
-                                                        -- schieten vd ufo's implementeren shootingUFO w
-
+                                                        -- schieten vd ufo's implementeren: 
+                                                        newUFO4 = shootingUFO w newUFO3 -- nieuwe kogels van de ufo
                                                         -- velocity aanpassen? eens in de 2 seconden
                                                         newUFO3 | not $ minimumDistance newUFO2 loc = standStill newUFO2
                                                                 | otherwise                       = newVelocity newUFO2 loc 
                                                         
 
 minimumDistance :: UFO -> Location -> Bool
-minimumDistance ufo@UFO{locationUFO = loc@(Location x1 y1)} (Location x2 y2)  | sqrt (dXSquare + dYSquare) >= 100 = True
+minimumDistance ufo@UFO{locationUFO = loc@(Location x1 y1)} (Location x2 y2)  | sqrt (dXSquare + dYSquare) >= 200 = True
                                                                               | otherwise = False
                                                               where
                                                                 dXSquare = deltaX * deltaX
