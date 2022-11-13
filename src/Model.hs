@@ -1,9 +1,11 @@
+{-# LANGUAGE DeriveGeneric #-}
 -- | This module contains the data types which represent the state of the game
 module Model where 
 import Debug.Trace
 import Graphics.Gloss (Picture)
 
 import System.Random
+import GHC.Generics (Generic)
 
 -- | data type World which contains the whole gamestate
 data World = World{ player :: Player,  --todo add the standard pictures to world
@@ -17,32 +19,32 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
                     enemies :: [UFO],
                     activeUFO :: Int,
                     elapsedTime :: Float
-                    } 
+                    } deriving Generic
 
 
-data State = Playing | Pause | Dead | Done deriving (Eq, Show)
+data State = Playing | Pause | Dead | Done deriving (Eq, Show, Generic)
 -- | data type Asteroid
-data Asteroid = Asteroid {middle:: Location, radius :: Radius, velocityA :: Velocity, speed :: Float} deriving Show
+data Asteroid = Asteroid {middle:: Location, radius :: Radius, velocityA :: Velocity, speed :: Float} deriving (Show, Generic)
 
 -- | data type Player
-data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving Show
+data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving (Show, Generic)
 
 -- | data type Bullet
-data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, radiusB :: Float} deriving Show-- Bullet kan maximaal 50f afleggen
+data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDistance :: Float} deriving (Show, Generic)
 
 
 -- | data type UFO and the bullets
-data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, speedUFO :: Float, size :: Float, bulletsUFO :: UFOBullets, stateUFO :: StateUFO, lastShotAt :: Float, number :: Int}
+data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, size :: Float, bulletsUFO :: UFOBullets} deriving (Show, Generic)
 type UFOBullets = [Bullet]
 data StateUFO = Waiting | Attacking | Killed deriving Eq
 
 -- | (data)types that are used in the datatypes above
 type Radius = Float
-data Location = Location {x::Float, y::Float} deriving Show 
+data Location = Location {x::Float, y::Float} deriving (Show, Generic)
 type Direction = Vector2d  
 type Velocity = Vector2d
-data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving (Show, Eq)
-data PicList = PicList {lazyRocket :: Picture, runningRockets :: [Picture], space :: Picture, asteroid :: Picture, ufo :: Picture}
+data Vector2d = Vector2d {xDir :: Float, yDir:: Float} deriving (Show, Eq, Generic)
+data PicList = PicList {lazyRocket :: Picture, runningRockets :: [Picture], space :: Picture, asteroid :: Picture, ufo :: Picture} deriving (Show, Generic)
 angle :: Vector2d -> Float
 angle v@(Vector2d x y) |x == 0    = 90 
                        |x < 0     = 180 + a
