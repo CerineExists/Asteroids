@@ -12,16 +12,13 @@ import Data.List
 
 
 
-
-
-
 -- | Adjust the asteroids only that are NOT HIT 
 adjustAsteroidLocations :: [Asteroid] -> [Asteroid]
 adjustAsteroidLocations = map updateAsteroid
 
 updateAsteroid :: Asteroid -> Asteroid
-updateAsteroid a@(Asteroid (Middle x y) radius v@(Vector2d vx vy) speed)=
-      Asteroid (Middle newX newY) radius v speed
+updateAsteroid a@(Asteroid (Location x y) radius v@(Vector2d vx vy) speed)=
+      Asteroid (Location newX newY) radius v speed
       where
                     newX    | x > 510 = -500 
                             | x < -510 = 510
@@ -89,13 +86,13 @@ spawnNewAsteroid w@World{asteroids = as, seed = s, elapsedTime = time, lastAster
                                                         | otherwise = w
                                             where
                                               newAsteroid :: Asteroid
-                                              newAsteroid    = Asteroid findMiddle 20 velocity (Vector2d 0 0) -- (findVelocity locationAsteroid)
+                                              newAsteroid    = Asteroid findLocation 20 velocity (Vector2d 0 0) -- (findVelocity locationAsteroid)
 
-                                              findMiddle :: Middle 
-                                              findMiddle    | locAsteroid == North  = Middle middleXY 250    -- spawn at top of screen
-                                                            | locAsteroid == South  = Middle middleXY (-250)  -- spawn at bottom of screen
-                                                            | locAsteroid == East   = Middle 500 middleXY  -- spawn at left of screen                                                          
-                                                            | otherwise             = Middle (-500) middleXY   -- spawn at right of screen
+                                              findLocation :: Location 
+                                              findLocation    | locAsteroid == North  = Location LocationXY 250    -- spawn at top of screen
+                                                            | locAsteroid == South  = Location LocationXY (-250)  -- spawn at bottom of screen
+                                                            | locAsteroid == East   = Location 500 LocationXY  -- spawn at left of screen                                                          
+                                                            | otherwise             = Location (-500) LocationXY   -- spawn at right of screen
 
 
                                               -- determine if the asteroid will spawn top, right, bottom or left
@@ -107,8 +104,8 @@ spawnNewAsteroid w@World{asteroids = as, seed = s, elapsedTime = time, lastAster
                                                               where
                                                                 generator = round (time*100) `mod` 4 
 
-                                              -- find the random middlepoint
-                                              (middleXY, nextG3)  | locAsteroid == North || locAsteroid == South = randomR (-500, 50) nextG2
+                                              -- find the random Locationpoint
+                                              (LocationXY, nextG3)  | locAsteroid == North || locAsteroid == South = randomR (-500, 50) nextG2
                                                                   | otherwise = randomR (-250, 250) nextG2
 
 

@@ -7,17 +7,18 @@ import Asteroid
 import Bullet
 import HelpFunctions
 import Enemy
+import JsonInstance
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import Data.List
 import Debug.Trace (trace)
-import Data.Foldable
+import Data.Foldable  
 import System.Random
 import Data.Maybe
 import System.Directory
 import System.FilePath.Posix (takeDirectory)
-
+import Data.Aeson
 
 
 -- | Handle user input
@@ -169,12 +170,16 @@ clamp x val = max (-x) (min x val)
 gameover :: World -> IO World
 gameover w@World{state = s} = do
   let oldPath = "scores.txt"
+  createDirectoryIfMissing True $ takeDirectory oldPath
   lns <- readFile oldPath
   let newPath = "newscores.txt" 
   let newLns = lns ++ "Your score was: " ++ show (score w) ++ "\n"
   createDirectoryIfMissing True $ takeDirectory newPath
   writeFile newPath newLns
   renameFile newPath oldPath 
+
+  doJSON w 
+
   return w{state = Done}
 
 -- function that checks if player hit an asteroid
@@ -187,3 +192,13 @@ playerHitUfoBullet p@Player {location = Location x y} u@UFO {bulletsUFO = bs} = 
 
 playerHitBullet :: Player -> Bullet -> Bool
 playerHitBullet (Player (Location x y) _ _) (Bullet (Location bx by) _ _) = (x-bx)^2 + (y-by)^2 < 20^2
+-- makes a file with the world as a JSON object
+doJSON :: World -> IO ()
+doJSON w = do
+  let path = "world.json"
+  let newPath = "newworld.json"
+  createDirectoryIfMissing True $ takeDirectory path
+  createDirectoryIfMissing True $ takeDirectory newPath
+  encodeFile newPath w
+  renameFile newPath path
+

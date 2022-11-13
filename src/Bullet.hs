@@ -9,7 +9,7 @@ import Data.List
 
 -- | Check if asteroid was hit by a bullet
 didABulletHitMe :: [Bullet] -> Asteroid -> Bool
-didABulletHitMe bs a@(Asteroid (Middle x y) radius v@(Vector2d vx vy) _)
+didABulletHitMe bs a@(Asteroid (Location x y) radius v@(Vector2d vx vy) _)
       | or boolList = True -- if the bullet hit any asteroid -> remove bullet
       | otherwise = False
             where
