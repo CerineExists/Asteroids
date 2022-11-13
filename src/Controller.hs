@@ -184,7 +184,7 @@ gameover w@World{state = s} = do
 
 -- function that checks if player hit an asteroid
 playerHitAsteroid :: Player -> Asteroid -> Bool
-playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Middle ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2
+playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Location ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2
 
 -- function that checks if player hit an ufo bullet
 playerHitUfoBullet :: Player -> UFO -> Bool

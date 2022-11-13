@@ -30,11 +30,11 @@ data Asteroid = Asteroid {middle:: Location, radius :: Radius, velocityA :: Velo
 data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving (Show, Generic)
 
 -- | data type Bullet
-data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, travalledDistance :: Float} deriving (Show, Generic)
+data Bullet = Bullet {locationB :: Location, velocityB :: Velocity, radiusB :: Float}
 
 
 -- | data type UFO and the bullets
-data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, size :: Float, bulletsUFO :: UFOBullets} deriving (Show, Generic)
+data UFO = UFO {locationUFO :: Location, velocityUFO :: Velocity, speedUFO :: Float, size :: Float, bulletsUFO :: UFOBullets, stateUFO :: StateUFO, lastShotAt :: Float, number :: Int}
 type UFOBullets = [Bullet]
 data StateUFO = Waiting | Attacking | Killed deriving Eq
 

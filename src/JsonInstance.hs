@@ -12,10 +12,10 @@ import GHC.Generics
 
 instance ToJSON World where
     -- this generates a Value
-    toJSON (World player keys asteroids bullets _ score _ _ elapsedTime) =
+    toJSON (World player keys asteroids bullets _ score _ _ _ _ elapsedTime ) =
         object ["player" .= player, "keys" .= keys, "asteroids" .= asteroids, "bullets" .= bullets, "score" .= score, "elapsedTime" .= elapsedTime]
      -- this encodes directly to a bytestring Builder
-    toEncoding (World player keys asteroids bullets state score pics seed elapsedTime) =
+    toEncoding (World player keys asteroids bullets _ score _ _ _ _ elapsedTime ) =
         pairs ("player" .= player <> "keys" .= keys <> "asteroids" .= asteroids <> "bullets" .= bullets <> "score" .= score <> "elapsedTime" .= elapsedTime)
 
 --player instances

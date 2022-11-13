@@ -60,10 +60,10 @@ ufoList =       [   UFO (Location (-500) (-250))    (Vector2d 5 5)      5       
 
 -- The initial asteroidlist
 asteroidList :: [Asteroid]
-asteroidList =  [   Asteroid (Middle (-500) 20) 10 (Vector2d 3 2) 3, 
-                    Asteroid (Middle (-500) 100) 20 (Vector2d 4 3) 4, 
-                    Asteroid (Middle (-100) (-250)) 40 (Vector2d 5 6) 5,  
-                    Asteroid (Middle 30 250) 40 (Vector2d 6 7) 6
+asteroidList =  [   Asteroid (Location (-500) 20) 10 (Vector2d 3 2) 3, 
+                    Asteroid (Location (-500) 100) 20 (Vector2d 4 3) 4, 
+                    Asteroid (Location (-100) (-250)) 40 (Vector2d 5 6) 5,  
+                    Asteroid (Location 30 250) 40 (Vector2d 6 7) 6
                 ] 
 
 
