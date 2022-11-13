@@ -1,10 +1,10 @@
 
 module Main where
 
-
 import Model
 import View
 import Controller
+
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
@@ -12,15 +12,15 @@ import System.Random
 
 main :: IO ()
 main = do
-    raket <- loadBMP "rocketStill.bmp"     -- self made
-    rRocket1 <- loadBMP "runningRocket1.bmp"
-    rRocket2 <- loadBMP "runningRocket2.bmp"
-    rRocket3 <- loadBMP "runningRocket3.bmp"
-    rRocket4 <- loadBMP "runningRocket4.bmp"
-    ufo <- loadBMP "ufoBMP.bmp"
-    space <- loadBMP "space.bmp"        -- https://opengameart.org/content/space-backdrop
+    raket    <- loadBMP "rocketStill.bmp"    -- self made
+    rRocket1 <- loadBMP "runningRocket1.bmp" -- self made
+    rRocket2 <- loadBMP "runningRocket2.bmp" -- self made
+    rRocket3 <- loadBMP "runningRocket3.bmp" -- self made
+    rRocket4 <- loadBMP "runningRocket4.bmp" -- self made
+    ufo      <- loadBMP "ufoBMP.bmp"    -- https://opengameart.org/content/ufo-1
+    space    <- loadBMP "space.bmp"     -- https://opengameart.org/content/space-backdrop
     asteroid <- loadBMP "asteroid.bmp"  -- https://opengameart.org/content/asteroid-generator-and-a-set-of-generated-asteroids
-    seed <- initStdGen
+    seed     <- initStdGen    -- Create a seed for using randomness later on
     playIO
         windowDisplay     -- display mode
         black             -- background color
@@ -54,16 +54,17 @@ initialWorld raket runningRockets space asteroid ufo seed =
 
 -- Create the UFO's that will later appear. Status starts at Waiting, will become Attacking at one point and may become Killed.
 ufoList :: [UFO] --         locationUFO              velocityUFO     speedUFO  size  bulletsUFO    stateUFO lastShotAt  number
-ufoList =       [   UFO (Location (-500) (-250))    (Vector2d 5 5)      5        6      []          Waiting   0          0,
+ufoList =       [   UFO (Location (-500) (-250))    (Vector2d 5 5)      4        6      []          Waiting     0          0,
                     UFO (Location    500 (-100))    (Vector2d 2 5)      5        4      []          Waiting     0          1,
-                    UFO (Location (-200)   250)    (Vector2d 5 3)       5        3      []          Waiting     0          2]
+                    UFO (Location (-200)   250)     (Vector2d 5 3)      6        3      []          Waiting     0          2]
+
 
 -- The initial asteroidlist
 asteroidList :: [Asteroid]
-asteroidList =  [   Asteroid (Location (-500) 20) 10 (Vector2d 3 2) 3, 
-                    Asteroid (Location (-500) 100) 20 (Vector2d 4 3) 4, 
-                    Asteroid (Location (-100) (-250)) 40 (Vector2d 5 6) 5,  
-                    Asteroid (Location 30 250) 40 (Vector2d 6 7) 6
+asteroidList =  [   Asteroid (Location (-500) 20)       10 (Vector2d 3 2) 3, 
+                    Asteroid (Location (-500) 100)      20 (Vector2d 4 3) 4, 
+                    Asteroid (Location (-100) (-250))   40 (Vector2d 5 6) 5,  
+                    Asteroid (Location 30 250)          40 (Vector2d 6 7) 6
                 ] 
 
 

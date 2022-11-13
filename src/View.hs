@@ -12,8 +12,8 @@ import Enemy
 -- | Tekenen
 viewBMP :: World -> IO Picture
 viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList r [r1, r2, r3, r4] space a ufoPic) _ enemies activeUFO time) 
-                            | state == Playing = return $ pictures scene
-                            | otherwise = return $ pictures ( scene ++ msg)      
+                            | state == Playing  = return $ pictures scene
+                            | otherwise         = return $ pictures ( scene ++ msg)      
                                 where
                                         scene = [space,  
                                                 rocket] ++
@@ -22,6 +22,7 @@ viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList 
                                                 ufo ++
                                                 ufoBullets ++
                                                 scoreText score ++ timeText time
+
                                         rocket  = translate x y $ rotate (90 - angle degree) whichRocket
                                         bullets = map translateBullets bs
                                         asteroids = map (translateAsteroid a) as 
@@ -42,9 +43,13 @@ viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList 
                                                 _ ->  [translate (-25)  0 $ scale 0.3 0.3 $ color white $ text "GAME OVER"]
                                         amIAttacking :: UFO -> Bool
                                         amIAttacking ufo@UFO{stateUFO = state}  | state == Attacking = True
+
+                                        bulletsOf :: UFO -> [Bullet]
+                                        bulletsOf u@UFO {bulletsUFO = bs} = bs
                                                                
                                         
--- op basis van elapsedTime één vd 2 sprites te kiezen                                                     
+-- | Functions below are used for translating an object to a picture on the screen.
+
 translateUFO :: Picture -> UFO -> Picture
 translateUFO pic ufo@UFO{locationUFO = loc@(Location x y), size = size, bulletsUFO = bs} = translate x y (scale (0.1 * size) (0.1 * size) pic)
 

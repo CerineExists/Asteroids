@@ -21,8 +21,9 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
                     elapsedTime :: Float
                     } deriving Generic
 
-
+-- | data type which contains the current State of the world. Is the player playing? Is the game paused? Is the player dead? Is everything Done?
 data State = Playing | Pause | Dead | Done deriving (Eq, Show, Generic)
+
 -- | data type Asteroid
 data Asteroid = Asteroid {middle:: Location, radius :: Radius, velocityA :: Velocity, speed :: Float} deriving (Show, Generic)
 
@@ -52,8 +53,7 @@ angle v@(Vector2d x y) |x == 0    = 90
                        |otherwise =  a
                        where a = 180/pi * atan(y/x)
 
-data LocationNewAsteroid = North | East | South | West deriving Eq
-                        
+                       
 
 -- | Instance Num for vector arithmetic
 instance Num Vector2d where
@@ -63,6 +63,13 @@ instance Num Vector2d where
     abs (Vector2d x y) = Vector2d (abs x) (abs y)
     signum (Vector2d x y) = Vector2d (signum x) (signum y)
     fromInteger i = Vector2d (fromInteger i) (fromInteger i)
+
+
+
+
+-- | checks if a location is within a radius of another location
+hit :: Location -> Radius -> (Location, Radius) -> Bool
+hit (Location x1 y1) r1 (Location x2 y2, r2) = (x1-x2)^2 + (y1-y2)^2 <= (r1+r2)^2
 
 
 
@@ -77,7 +84,5 @@ oneAsteroid :: Asteroid -> String
 oneAsteroid (Asteroid (Location x y) r v dir) = "       -- | midden: " ++ show x ++ ", " ++ show y ++ "    radius: " ++ show r
 
 
--- checks if a location is within a radius of another location
-hit :: Location -> Radius -> (Location, Radius) -> Bool
-hit (Location x1 y1) r1 (Location x2 y2, r2) = (x1-x2)^2 + (y1-y2)^2 <= (r1+r2)^2
+
 

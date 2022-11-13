@@ -29,8 +29,7 @@ updateAsteroid a@(Asteroid (Location x y) radius v@(Vector2d vx vy) speed)=
                     mag = sqrt (vx * vx + vy * vy)
 
 
-
-
+-- __________________________________________________________________________________________________________________
 
 
 
@@ -72,48 +71,3 @@ splitAsteroid seed a@(Asteroid m radius (Vector2d vx vy) speed)
                                                 Vector2d x_Dir1 y_Dir1  = degreeToVector degree1
                                                 (degree1, nextG1)   = randomR (0, 360) seed
                                               
-
-
-
--- | new asteroids spawnen
--- Spawns a new asteroid every 3 seconds
--- we kunnen evt de check (time - lastAs) > 3 verplaatsen naar een andere plek en deze functie áltijd gebruiken 
--- voor het spawnen van een nieuwe asteroid
-{-
-spawnNewAsteroid :: World -> World
-spawnNewAsteroid w@World{asteroids = as, seed = s, elapsedTime = time, lastAsteroidSpawned = lastAs}  
-                                                        | (time - lastAs) > 3 = w{seed = nextG3, asteroids = newAsteroid : as, lastAsteroidSpawned = time} 
-                                                        | otherwise = w
-                                            where
-                                              newAsteroid :: Asteroid
-                                              newAsteroid    = Asteroid findLocation 20 velocity (Vector2d 0 0) -- (findVelocity locationAsteroid)
-
-                                              findLocation :: Location 
-                                              findLocation    | locAsteroid == North  = Location LocationXY 250    -- spawn at top of screen
-                                                            | locAsteroid == South  = Location LocationXY (-250)  -- spawn at bottom of screen
-                                                            | locAsteroid == East   = Location 500 LocationXY  -- spawn at left of screen                                                          
-                                                            | otherwise             = Location (-500) LocationXY   -- spawn at right of screen
-
-
-                                              -- determine if the asteroid will spawn top, right, bottom or left
-                                              locAsteroid :: LocationNewAsteroid
-                                              locAsteroid | generator == 0 = North
-                                                          | generator == 1 = East
-                                                          | generator == 2 = South
-                                                          | otherwise = West
-                                                              where
-                                                                generator = round (time*100) `mod` 4 
-
-                                              -- find the random Locationpoint
-                                              (LocationXY, nextG3)  | locAsteroid == North || locAsteroid == South = randomR (-500, 50) nextG2
-                                                                  | otherwise = randomR (-250, 250) nextG2
-
-
-                                              -- determine velocity
-                                              velocity = Vector2d (speed * x_Dir) (speed*y_Dir)
-                                              (speed, nextG2) = randomR (5,10) nextG1
-
-                                              (x_Dir, y_Dir) = degreeToVector degree
-                                              (degree, nextG1)     = randomR (0, 360) s
-                                               
--}

@@ -7,7 +7,6 @@ import Data.List (elemIndex)
 
 
 
-
 -- | Find a new direction
 turn :: Vector2d -> Float -> Vector2d
 v@(Vector2d x y) `turn` f = Vector2d newX newY where
