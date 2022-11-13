@@ -51,16 +51,16 @@ instance ToJSON Bullet where
 
 
 
--- create a new world from a json object
-instance FromJSON World where
-    parseJSON (Object v) = World <$>
-                           v .: "player" <*>
-                           v .: "keys" <*>
-                           v .: "asteroids" <*>
-                           v .: "bullets" <*>
-                           v .: "state" <*>
-                           v .: "score" <*>
-                           v .: "pics" <*>
-                           v .: "seed" <*>
-                           v .: "elapsedTime"
-    parseJSON _ = mempty
+-- -- create a new world from a json object
+-- instance FromJSON World where
+--     parseJSON (Object v) = World <$>
+--                            v .: "player" <*>
+--                            v .: "keys" <*>
+--                            v .: "asteroids" <*>
+--                            v .: "bullets" <*>
+--                            v .: "state" <*>
+--                            v .: "score" <*>
+--                            v .: "pics" <*>
+--                            v .: "seed" <*>
+--                            v .: "elapsedTime"
+--     parseJSON _ = mempty
