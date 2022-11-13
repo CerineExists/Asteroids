@@ -132,7 +132,7 @@ bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = s
                          w {seed = newSeed, bullets = newLocBullets, asteroids = newAsteroids ++ newLocAsteroids,  score = score + newScore, state = newState}
             where
               --check if the player hit an asteroid
-              newState = if any (playerHitAsteroid (player w)) as || any (then Dead else state
+              newState = if any (playerHitAsteroid (player w)) as then Dead else state
              
 
               -- first remove the bullets that hit an asteroid and seperate the hit asteroids from the not hit asteroids
@@ -175,23 +175,3 @@ playerHitAsteroid :: Player -> Asteroid -> Bool
 playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Middle ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2
 
 
-
-
-
--- | HIERONDER IS HET NOG ROMMELIG. HET ENIGE DAT NOG MOET GEBEUREN IS DAT EEN SPELER DOOD GAAT DOOR EEN BULLET VAN EEN UFO
- 
--- function that checks if player hit an asteroid
-bulletHitPlayer :: Player -> [UFO] -> Bool
-bulletHitPlayer p@Player{location = loc@(Location x y)} ufos  | isNothing maybeUFO = False
-                                                              | otherwise = undefined -- check if one of the bullets hit the player
-
--- function that checks if player hit an asteroid
-playerHitAsteroid :: Bullet -> Player -> Bool
-playerHitAsteroid b@Bullet{locationB = loc@(Location x y)} p@Player{location = loc@(Location x y)} (Asteroid (Middle ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2                                                                
-
--- hit :: Location -> Radius -> (Location, Radius) -> Bool
--- hit (Location x1 y1) r1 (Location x2 y2, r2) = (x1-x2)^2 + (y1-y2)^2 <= (r1+r2)^2
-    where
-      maybeUFO = isThereAnActiveUFO ufos
-      activeUFO = fromJust maybeUFO
-      bullets = bulletsOf activeUFO
