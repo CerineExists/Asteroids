@@ -45,7 +45,7 @@ pop e xs = case elemIndex e xs of
 step :: Float -> World -> IO World
 step time  w@(World (Player (Location x y) (Vector2d dx dy) (Vector2d vx vy)) keys as bullets state score pics seed enemies activeUFO _) = do -- todo change momentum
      case state of 
-      Playing -> return $ (adjustTime . adjustScore . adjustEnemies . bulletsAndAsteroids . momentum . foldr move w) keys
+      Playing -> return $ (adjustTime . adjustEnemies . manageUFOs . bulletsAndAsteroids . momentum . foldr move w) keys
       Dead    -> gameover w
       _       -> return w
     where
@@ -68,25 +68,52 @@ adjustEnemies w@World{player = p@Player {location = loc}, bullets = bs, enemies 
                                               | otherwise = w {bullets = newBullets, enemies = newUFOS}
                                                       where 
                                                         -- did a bullet hit the active UFO?
+                                                        -- if it did newUFO1 has the state Killed
                                                         (newBullets, newUFO1) = didABulletHitUFO bs (fromJust maybeUFO) 
+
                                                         -- Calculate new location for the UFO:
                                                         newUFO2 = moveUFO newUFO1 p 
                                                         -- Adjust the velocity based on where the player is:
                                                         newUFO3 | not $ minimumDistance newUFO2 loc = standStill newUFO2
-                                                                | otherwise                       = newVelocity newUFO2 loc                                                         
+                                                                | otherwise                         = newVelocity newUFO2 loc                                                         
                                                         newUFO4 = shootingUFO w newUFO3 -- nieuwe kogels van de ufo
-                                                        newUFOS = [newUFO4]                                     
+                                                        newUFOS =  replace ufos number newUFO4                                  
                                                         
                                                         maybeUFO = isThereAnActiveUFO ufos -- check if there is an active ufo
+                                                        number = whichNumber (fromJust maybeUFO)                  
+                                                      
 
-                                                        -- nog spawnen van ufo's implementeren
-                                                        -- Eerste UFO pas laten komen als er minimaal ?300? punten zijn gehaald. 
-                                                        -- Tweede UFO bij een minimum van ?600? punten EN DE VORIGE UFO MOET DOOD ZIJN
-                                                        -- (DAT IS HEEL BELANGRIJK, WANT ALLES IS EROP GEBOUWD DAT ER MAAR 1 UFO TEGELIJK ACTIEF KAN ZIJN)
-                                                        -- Derde UFO ook pas laten spawnen als vorige UFO dood is
-                                           
-                                                       
-                                                        
+
+whichNumber :: UFO -> Int
+whichNumber u@UFO{number = n} = n
+
+-- | This function decides when a new UFO becomes activated                                                       
+manageUFOs :: World -> World
+manageUFOs w@World{enemies = ufos, elapsedTime = time, score = s} 
+                        | s >= 400 && isNothing maybeUFO && stateOfUFO (head ufos) == Waiting = w {enemies = activateUFO ufos 0} -- activeer ufo 1
+                        | s >= 800 && isNothing maybeUFO && stateOfUFO (ufos !! 1) == Waiting = w {enemies = activateUFO ufos 1} -- activeer ufo 2
+                        | s >= 1200 && isNothing maybeUFO && stateOfUFO (ufos !! 2) == Waiting = w {enemies = activateUFO ufos 2} -- activeer ufo 3
+                        | otherwise = w
+                              where
+                                maybeUFO = isThereAnActiveUFO ufos 
+                              --  state = stateOfUFO maybeUFO
+
+                                
+
+stateOfUFO :: UFO -> StateUFO  
+stateOfUFO u@UFO {stateUFO = s} = s                                                                                
+
+
+activateUFO :: [UFO] -> Int -> [UFO]
+activateUFO ufos i = replace ufos i toBeActivated{stateUFO = Attacking}
+                             where 
+                                toBeActivated = ufos !! i
+
+
+-- replaces the i'th element of ufos with one ufo
+replace :: [UFO] -> Int -> UFO -> [UFO]   
+replace ufos i new = take i ufos ++ [new] ++ drop (i+1) ufos                          
+
 
 minimumDistance :: UFO -> Location -> Bool
 minimumDistance ufo@UFO{locationUFO = loc@(Location x1 y1)} (Location x2 y2)  | sqrt (dXSquare + dYSquare) >= 200 = True
@@ -138,9 +165,6 @@ didBulletHitAsteroid bs as = (newBullets, hitAsteroids, notHitAsteroids)
 clamp :: Float -> Float -> Float
 clamp x val = max (-x) (min x val)
 
--- | adjusts the score 
-adjustScore :: World -> World -- todo add enemy and asteroid death events
-adjustScore w@World{score = score} = w {score = score + 1}
 
 gameover :: World -> IO World
 gameover w@World{state = s} = do
