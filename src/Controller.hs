@@ -10,7 +10,6 @@ import Enemy
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
-import System.Random
 import Data.List
 import Debug.Trace (trace)
 import Data.Foldable
@@ -18,6 +17,8 @@ import System.Random
 import Data.Maybe
 import System.Directory
 import System.FilePath.Posix (takeDirectory)
+
+
 
 -- | Handle user input
 input :: Event -> World -> IO World
@@ -102,11 +103,11 @@ minimumDistance ufo@UFO{locationUFO = loc@(Location x1 y1)} (Location x2 y2)  | 
 
 -- Adjusts the list of asteroids and bullets in World
 bulletsAndAsteroids :: World -> World
-bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = score, state = state} = 
+bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = score, state = state, enemies = ufos} = 
                          w {seed = newSeed, bullets = newLocBullets, asteroids = newAsteroids ++ newLocAsteroids,  score = score + newScore, state = newState}
             where
-              --check if the player hit an asteroid
-              newState = if any (playerHitAsteroid (player w)) as then Dead else state
+              --check if the player hit an asteroid or ufos bullet
+              newState = if any (playerHitAsteroid (player w)) as || any (playerHitUfoBullet (player w)) (ufos)  then Dead else state
               -- first remove the bullets that hit an asteroid and seperate the hit asteroids from the not hit asteroids
               (notHitBullets, hitAsteroids, notHitAsteroids) = didBulletHitAsteroid bs as
               -- give the bullets that did not hit anything a new location
@@ -155,3 +156,10 @@ gameover w@World{state = s} = do
 -- function that checks if player hit an asteroid
 playerHitAsteroid :: Player -> Asteroid -> Bool
 playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Middle ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2
+
+-- function that checks if player hit an ufo bullet
+playerHitUfoBullet :: Player -> UFO -> Bool
+playerHitUfoBullet p@Player {location = Location x y} u@UFO {bulletsUFO = bs} = any (playerHitBullet p) bs
+
+playerHitBullet :: Player -> Bullet -> Bool
+playerHitBullet (Player (Location x y) _ _) (Bullet (Location bx by) _ _) = (x-bx)^2 + (y-by)^2 < 20^2
