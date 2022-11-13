@@ -5,11 +5,11 @@ import Model
 findNewLocation :: Location -> Velocity -> Location 
 findNewLocation (Location x y) (Vector2d mx my) = Location newX newY
             where
-                newX | x < -500 = 500 + mx 
-                     | x > 500 = -500 + mx
+                newX | x < -505 = 500 + mx 
+                     | x > 505 = -500 + mx
                      | otherwise = x + mx
-                newY |  y < -250 = 250 + my
-                     | y > 250 = -250 + my
+                newY |  y < -255 = 250 + my
+                     | y > 255 = -250 + my
                      | otherwise = y + my
 
 isThereAnActiveUFO :: [UFO] -> Maybe UFO
