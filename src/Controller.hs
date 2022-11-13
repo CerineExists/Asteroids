@@ -128,11 +128,11 @@ minimumDistance ufo@UFO{locationUFO = loc@(Location x1 y1)} (Location x2 y2)  | 
 
 -- Adjusts the list of asteroids and bullets in World
 bulletsAndAsteroids :: World -> World
-bulletsAndAsteroids w@World{seed = seed, bullets = bs, asteroids = as, score = score, state = state, enemies = ufos} = 
+bulletsAndAsteroids w@World{player = player, seed = seed, bullets = bs, asteroids = as, score = score, state = state, enemies = ufos} = 
                          w {seed = newSeed, bullets = newLocBullets, asteroids = newAsteroids ++ newLocAsteroids,  score = score + newScore, state = newState}
             where
               --check if the player hit an asteroid
-              newState = if any (playerHitAsteroid (player w)) as || any (then Dead else state
+              newState = if any (playerHitAsteroid player) as || amIHit player ufos then Dead else state
              
 
               -- first remove the bullets that hit an asteroid and seperate the hit asteroids from the not hit asteroids
@@ -170,6 +170,7 @@ gameover :: World -> IO World
 gameover w = do
   writeFile "scores.txt" $ "Your score was: " ++ show (score w)
   return w
+  
 -- function that checks if player hit an asteroid
 playerHitAsteroid :: Player -> Asteroid -> Bool
 playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Middle ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2
@@ -177,21 +178,22 @@ playerHitAsteroid (Player (Location x y) _ _) (Asteroid (Middle ax ay) _ _ _) = 
 
 
 
-
--- | HIERONDER IS HET NOG ROMMELIG. HET ENIGE DAT NOG MOET GEBEUREN IS DAT EEN SPELER DOOD GAAT DOOR EEN BULLET VAN EEN UFO
  
 -- function that checks if player hit an asteroid
-bulletHitPlayer :: Player -> [UFO] -> Bool
-bulletHitPlayer p@Player{location = loc@(Location x y)} ufos  | isNothing maybeUFO = False
-                                                              | otherwise = undefined -- check if one of the bullets hit the player
+amIHit :: Player -> [UFO] -> Bool
+amIHit p@Player{location = loc@(Location x y)} ufos   | isNothing maybeUFO = False
+                                                      | otherwise =  or bulletHits
+                                          where
+                                            bulletHits = map (bulletHitsPlayer loc) bullets -- list with which bullets hit the player (true or false)
+                                            maybeUFO = isThereAnActiveUFO ufos
+                                            activeUFO = fromJust maybeUFO
+                                            bullets = bulletsOf activeUFO
+
 
 -- function that checks if player hit an asteroid
-playerHitAsteroid :: Bullet -> Player -> Bool
-playerHitAsteroid b@Bullet{locationB = loc@(Location x y)} p@Player{location = loc@(Location x y)} (Asteroid (Middle ax ay) _ _ _) = (x-ax)^2 + (y-ay)^2 < 20^2                                                                
+bulletHitsPlayer :: Location -> Bullet -> Bool
+bulletHitsPlayer (Location px py) b@Bullet{locationB = loc@(Location x y)}  = (x-px)^2 + (y-py)^2 < 20^2                                                                
 
--- hit :: Location -> Radius -> (Location, Radius) -> Bool
--- hit (Location x1 y1) r1 (Location x2 y2, r2) = (x1-x2)^2 + (y1-y2)^2 <= (r1+r2)^2
-    where
-      maybeUFO = isThereAnActiveUFO ufos
-      activeUFO = fromJust maybeUFO
-      bullets = bulletsOf activeUFO
+
+
+
