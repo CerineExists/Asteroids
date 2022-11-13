@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 Your score was: 114
 Your score was: 132
 Your score was: 88
@@ -8,17 +6,4 @@ Your score was: 56
 Your score was: 93
 Your score was: 94
 Your score was: 212
-=======
->>>>>>> ff03220 (this generates 2.34 GB text files : DO NOT RUN)
-=======
-Your score was: 94
-Your score was: 98
-Your score was: 111
-Your score was: 116
-Your score was: 198
-Your score was: 107
-Your score was: 97
-Your score was: 87
-Your score was: 107
-Your score was: 116
->>>>>>> 91f5e90 (toJSON instances)
+
