@@ -39,15 +39,10 @@ viewBMP (World (Player (Location x y) degree v) keys as bs state score (PicList 
 
                                         msg = case state of
                                                 Pause -> [translate (-20) 0 $ scale 0.3 0.3 $ color white $ text "Pause"]
-                                                Dead ->  [translate (-25)  0 $ scale 0.3 0.3 $ color white $ text "GAME OVER"]
-                                                _ -> []
-                                                --Dead ->  [translate (-30)  0 $ scale 0.3 0.3 $ color white $ text "GAME OVER"]
+                                                _ ->  [translate (-25)  0 $ scale 0.3 0.3 $ color white $ text "GAME OVER"]
                                         amIAttacking :: UFO -> Bool
                                         amIAttacking ufo@UFO{stateUFO = state}  | state == Attacking = True
-                                                                                | otherwise = False                                        
-
-                                        
-
+                                                               
                                         
 -- op basis van elapsedTime één vd 2 sprites te kiezen                                                     
 translateUFO :: Picture -> UFO -> Picture
@@ -57,7 +52,7 @@ translateUFOBullets :: Bullet -> Picture
 translateUFOBullets b@Bullet{locationB = loc@(Location x y), radiusB = radius} = translate x y (color white (thickCircle 2 radius))
 
 translateAsteroid :: Picture -> Asteroid -> Picture 
-translateAsteroid pic (Asteroid (Middle x y) radius _ _) =  translate x y $ scale (0.005 * radius) (0.005 * radius) pic
+translateAsteroid pic (Asteroid (Location x y) radius _ _) =  translate x y $ scale (0.005 * radius) (0.005 * radius) pic
 
 translateBullets :: Bullet -> Picture
 translateBullets b@Bullet{locationB = loc@(Location x y), radiusB = radius} = translate x y (color green (thickCircle 3 radius))

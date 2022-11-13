@@ -22,7 +22,7 @@ data World = World{ player :: Player,  --todo add the standard pictures to world
 
 data State = Playing | Pause | Dead | Done deriving (Eq, Show)
 -- | data type Asteroid
-data Asteroid = Asteroid {middle:: Middle, radius :: Radius, velocityA :: Velocity, speed :: Float} deriving Show
+data Asteroid = Asteroid {middle:: Location, radius :: Radius, velocityA :: Velocity, speed :: Float} deriving Show
 
 -- | data type Player
 data Player = Player { location :: Location, direction :: Direction, velocity :: Velocity} deriving Show
@@ -37,7 +37,6 @@ type UFOBullets = [Bullet]
 data StateUFO = Waiting | Attacking | Killed deriving Eq
 
 -- | (data)types that are used in the datatypes above
-data Middle = Middle Float Float deriving Show-- x y coordinates of the middle point
 type Radius = Float
 data Location = Location {x::Float, y::Float} deriving Show 
 type Direction = Vector2d  
@@ -73,7 +72,7 @@ asteroidszien :: [Asteroid] -> String
 asteroidszien = concatMap oneAsteroid
 
 oneAsteroid :: Asteroid -> String
-oneAsteroid (Asteroid (Middle x y) r v dir) = "       -- | midden: " ++ show x ++ ", " ++ show y ++ "    radius: " ++ show r
+oneAsteroid (Asteroid (Location x y) r v dir) = "       -- | midden: " ++ show x ++ ", " ++ show y ++ "    radius: " ++ show r
 
 
 -- checks if a location is within a radius of another location

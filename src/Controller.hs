@@ -7,16 +7,18 @@ import Asteroid
 import Bullet
 import HelpFunctions
 import Enemy
+import JsonInstance
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import Data.List
 import Debug.Trace (trace)
-import Data.Foldable
+import Data.Foldable  
 import System.Random
 import Data.Maybe
 import System.Directory
 import System.FilePath.Posix (takeDirectory)
+
 
 
 
@@ -171,10 +173,13 @@ gameover w@World{state = s} = do
   let oldPath = "scores.txt"
   lns <- readFile oldPath
   let newPath = "newscores.txt" 
-  let newLns = lns ++ "Your score was: " ++ show (score w) ++ "\n"
+  let newLns = encode s--lns ++ "Your score was: " ++ show (score w) ++ "\n"
   createDirectoryIfMissing True $ takeDirectory newPath
   writeFile newPath newLns
   renameFile newPath oldPath 
+
+  --print(encode w) 
+
   return w{state = Done}
 
 -- function that checks if player hit an asteroid

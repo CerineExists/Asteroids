@@ -44,7 +44,7 @@ normalize (Vector2d x y) = Vector2d newX newY
 
 -- get the location of an asteroid
 getAsteroidLocation :: Asteroid -> (Location, Radius)
-getAsteroidLocation (Asteroid (Middle x y) radius _ _) = (Location x y, radius)
+getAsteroidLocation (Asteroid (Location x y) radius _ _) = (Location x y, radius)
 
 
 -- get the location of a bullet
