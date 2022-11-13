@@ -54,9 +54,9 @@ initialWorld raket runningRockets space asteroid ufo seed =
 
 -- Create the UFO's that will later appear. Status starts at Waiting, will become Attacking at one point and may become Killed.
 ufoList :: [UFO] --         locationUFO              velocityUFO     speedUFO  size  bulletsUFO    stateUFO lastShotAt  number
-ufoList =       [   UFO (Location (-500) (-250))    (Vector2d 5 5)      5        3      []          Waiting   0          0,
-                    UFO (Location    500 (-100))    (Vector2d 2 5)      5        6      []          Waiting     0          1,
-                    UFO (Location (-200)   250)    (Vector2d 5 3)      5        3      []          Waiting     0          2]
+ufoList =       [   UFO (Location (-500) (-250))    (Vector2d 5 5)      5        6      []          Waiting   0          0,
+                    UFO (Location    500 (-100))    (Vector2d 2 5)      5        4      []          Waiting     0          1,
+                    UFO (Location (-200)   250)    (Vector2d 5 3)       5        3      []          Waiting     0          2]
 
 -- The initial asteroidlist
 asteroidList :: [Asteroid]
